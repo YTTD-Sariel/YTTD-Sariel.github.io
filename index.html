@@ -1,388 +1,77 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>SARIEL_001</title>
-
 <link href="https://fonts.googleapis.com/css2?family=VT323&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
-
 <style>
-
 :root{
---bg:#05070b;
---card:#0c1017;
---line:#203447;
---text:#dce7f0;
---accent:#79dfff;
+--bg:#05070b; --card:#0c1017; --line:#203447; --text:#dce7f0; --accent:#79dfff;
 }
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
-
-html{
-scroll-behavior:smooth;
-}
-
-body{
-
-background:var(--bg);
-color:var(--text);
-
-font-family:'Noto Sans KR',sans-serif;
-
-overflow-x:hidden;
-
-}
-
-.crt{
-
-position:fixed;
-inset:0;
-
-pointer-events:none;
-
-background:
-repeating-linear-gradient(
-to bottom,
-rgba(255,255,255,.02),
-rgba(255,255,255,.02) 1px,
-transparent 1px,
-transparent 3px
-);
-
-opacity:.15;
-
-z-index:9999;
-
-}
-
-.hero{
-
-min-height:100vh;
-
-display:flex;
-align-items:center;
-justify-content:center;
-
-padding:50px;
-
-}
-
-.hero-wrap{
-
-width:min(1300px,95%);
-
-display:grid;
-grid-template-columns:1fr 500px;
-
-gap:60px;
-
-}
-
-.system-box{
-
-border:1px solid var(--line);
-
-padding:20px;
-
-background:rgba(255,255,255,.02);
-
-margin-bottom:25px;
-
-}
-
-.system-title{
-
-font-family:'VT323',monospace;
-
-font-size:34px;
-
-color:var(--accent);
-
-margin-bottom:10px;
-
-}
-
-.system-line{
-
-font-family:'VT323',monospace;
-
-font-size:24px;
-
-}
-
-.hero-name{
-
-font-size:120px;
-
-font-family:'VT323',monospace;
-
-color:var(--accent);
-
-text-shadow:0 0 20px var(--accent);
-
-}
-
-.hero-quote{
-
-font-size:24px;
-
-margin-top:15px;
-
-line-height:1.8;
-
-}
-
-.tags{
-
-margin-top:30px;
-
-display:flex;
-gap:10px;
-flex-wrap:wrap;
-
-}
-
-.tags span{
-
-border:1px solid var(--accent);
-
-padding:8px 15px;
-
-font-family:'VT323',monospace;
-
-font-size:22px;
-
-}
-
-.hero img{
-
-width:100%;
-
-max-height:85vh;
-
-object-fit:contain;
-
-}
-
-.section{
-
-width:min(1100px,90%);
-
-margin:auto;
-
-padding:120px 0;
-
-border-top:1px solid var(--line);
-
-}
-
-.title{
-
-font-family:'VT323',monospace;
-
-font-size:55px;
-
-color:var(--accent);
-
-margin-bottom:40px;
-
-}
-
-.card{
-
-border:1px solid var(--line);
-
-padding:25px;
-
-background:rgba(255,255,255,.02);
-
-line-height:2;
-
-}
-
-.relationship{
-
-display:flex;
-
-justify-content:center;
-
-align-items:center;
-
-gap:20px;
-
-flex-wrap:wrap;
-
-}
-
-.node{
-
-border:1px solid var(--line);
-
-padding:20px 30px;
-
-background:var(--card);
-
-}
-
-.arrow{
-
-font-size:30px;
-
-color:var(--accent);
-
-}
-
-.quote{
-
-border-left:3px solid var(--accent);
-
-padding:20px;
-
-margin-bottom:20px;
-
-background:rgba(255,255,255,.02);
-
-}
-
-.sprite-view{
-
-display:flex;
-
-justify-content:center;
-
-align-items:center;
-
-gap:20px;
-
-}
-
-.sprite-view img{
-
-width:400px;
-
-max-width:90%;
-
-}
-
-button{
-
-background:none;
-
-border:1px solid var(--accent);
-
-color:var(--accent);
-
-padding:10px 20px;
-
-cursor:pointer;
-
-}
-
-.past{
-
-background:
-
-linear-gradient(
-180deg,
-#eef8ff,
-#ffffff
-);
-
-color:#243748;
-
-padding:120px 0;
-
-margin-top:120px;
-
-margin-bottom:120px;
-
-}
-
-.past .title{
-
-color:#6aaee0;
-
-}
-
-footer{
-
-padding:80px;
-
-text-align:center;
-
-font-family:'VT323',monospace;
-
-font-size:28px;
-
-color:#6f8ca5;
-
-}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;overflow-x:hidden;}
+.crt{position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.02),rgba(255,255,255,.02) 1px,transparent 1px,transparent 3px);opacity:.15;z-index:9999;}
+.flash-overlay{position:fixed;inset:0;background:white;opacity:0;pointer-events:none;z-index:9998;}
+.flash-overlay.active{animation:memoryFlash .6s;}
+@keyframes memoryFlash{0%{opacity:0;}20%{opacity:1;}100%{opacity:0;}}
+
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:50px;}
+.hero-wrap{width:min(1300px,95%);display:grid;grid-template-columns:1fr 500px;gap:60px;}
+.system-box{border:1px solid var(--line);padding:20px;background:rgba(255,255,255,.02);margin-bottom:25px;}
+.system-title,.title,.hero-name,.memory-btn{font-family:'VT323',monospace;}
+.system-title{font-size:34px;color:var(--accent);margin-bottom:10px;}
+.system-line{font-family:'VT323',monospace;font-size:24px;}
+.hero-name{font-size:120px;color:var(--accent);text-shadow:0 0 20px var(--accent);}
+.hero-quote{font-size:24px;margin-top:15px;line-height:1.8;}
+.tags{margin-top:30px;display:flex;gap:10px;flex-wrap:wrap;}
+.tags span{border:1px solid var(--accent);padding:8px 15px;font-family:'VT323',monospace;font-size:22px;}
+.hero img{width:100%;max-height:85vh;object-fit:contain;}
+
+.section{width:min(1100px,90%);margin:auto;padding:120px 0;border-top:1px solid var(--line);}
+.title{font-size:55px;color:var(--accent);margin-bottom:40px;}
+.card{border:1px solid var(--line);padding:25px;background:rgba(255,255,255,.02);line-height:2;}
+.relationship{display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap;}
+.node{border:1px solid var(--line);padding:20px 30px;background:var(--card);}
+.arrow{font-size:30px;color:var(--accent);}
+.quote{border-left:3px solid var(--accent);padding:20px;margin-bottom:20px;background:rgba(255,255,255,.02);}
+
+.memory-btn{background:none;border:1px solid var(--accent);color:var(--accent);padding:15px 25px;font-size:24px;cursor:pointer;}
+.memory-hidden{max-height:0;overflow:hidden;transition:max-height .8s ease;}
+.memory-hidden.open{max-height:3000px;}
+.memory-content{background:white;color:#243748;padding:80px;margin-top:40px;border-radius:10px;box-shadow:0 0 100px rgba(255,255,255,.3);line-height:2;}
+
+.sprite-view{display:flex;justify-content:center;align-items:center;gap:20px;}
+.sprite-view img{width:400px;max-width:90%;}
+button{background:none;border:1px solid var(--accent);color:var(--accent);padding:10px 20px;cursor:pointer;}
+
+footer{padding:80px;text-align:center;font-family:'VT323',monospace;font-size:28px;color:#6f8ca5;}
 
 @media(max-width:900px){
-
-.hero-wrap{
-
-grid-template-columns:1fr;
-
+.hero-wrap{grid-template-columns:1fr;}
+.hero-name{font-size:70px;}
 }
-
-.hero-name{
-
-font-size:70px;
-
-}
-
-}
-
 </style>
-
 </head>
-
 <body>
 
+<div id="flash" class="flash-overlay"></div>
 <div class="crt"></div>
 
 <section class="hero">
-
 <div class="hero-wrap">
 
 <div>
-
 <div class="system-box">
-
-<div class="system-title">
-ASUNARO DATABASE
+<div class="system-title">ASUNARO DATABASE</div>
+<div class="system-line">SUBJECT : SARIEL_001</div>
+<div class="system-line">STATUS : ACTIVE</div>
+<div class="system-line">TYPE : HALF HUMAN / HALF DOLL</div>
+<div class="system-line">ERROR : DECOMMISSION FAILED</div>
 </div>
 
-<div class="system-line">
-SUBJECT : SARIEL_001
-</div>
-
-<div class="system-line">
-STATUS : ACTIVE
-</div>
-
-<div class="system-line">
-TYPE : HALF HUMAN / HALF DOLL
-</div>
-
-<div class="system-line">
-ERROR : DECOMMISSION FAILED
-</div>
-
-</div>
-
-<h1 class="hero-name">
-SARIEL
-</h1>
+<h1 class="hero-name">SARIEL</h1>
 
 <p class="hero-quote">
 "죽었다고?<br>
@@ -390,179 +79,100 @@ SARIEL
 </p>
 
 <div class="tags">
-
 <span>FOOLISH</span>
 <span>NATURAL</span>
 <span>ATHLETIC</span>
-
 </div>
-
 </div>
 
 <div>
-
 <img src="images/halfbody.png">
-
 </div>
 
 </div>
-
 </section>
 
 <section class="section">
-
-<h2 class="title">
-OFFICIAL STORY
-</h2>
-
+<h2 class="title">OFFICIAL STORY</h2>
 <div class="card">
-
 여기에 공식 서사 작성
-
 </div>
-
 </section>
 
 <section class="section">
-
-<h2 class="title">
-RELATIONSHIP
-</h2>
-
+<h2 class="title">RELATIONSHIP</h2>
 <div class="relationship">
-
-<div class="node">
-SOU
+<div class="node">SOU</div>
+<div class="arrow">▶</div>
+<div class="node">SAVIOR</div>
+<div class="arrow">▶</div>
+<div class="node">SARIEL</div>
 </div>
-
-<div class="arrow">
-▶
-</div>
-
-<div class="node">
-SAVIOR
-</div>
-
-<div class="arrow">
-▶
-</div>
-
-<div class="node">
-SARIEL
-</div>
-
-</div>
-
-</section>
-
-<section class="past">
-
-<div class="section">
-
-<h2 class="title">
-MEMORIES
-</h2>
-
-<div class="card">
-
-여기에 과거 작성
-
-</div>
-
-</div>
-
 </section>
 
 <section class="section">
+<h2 class="title">MEMORIES</h2>
 
-<h2 class="title">
-VOICE SAMPLE
-</h2>
+<button class="memory-btn" onclick="toggleMemory()">
+OPEN MEMORY FILE
+</button>
 
-<div class="quote">
-"아! 안녕!"
+<div id="memorySection" class="memory-hidden">
+<div class="memory-content">
+<h3 style="font-size:40px;margin-bottom:30px;">Before Everything</h3>
+<p>
+여기에 인간 시절의 과거를 작성.<br>
+천사 같았던 모습, 죽기 전 기억, 소중한 추억 등.
+</p>
 </div>
-
-<div class="quote">
-"괜찮아! 내가 할게!"
 </div>
-
-<div class="quote">
-"...죽었다고?"
-</div>
-
 </section>
 
 <section class="section">
+<h2 class="title">VOICE SAMPLE</h2>
+<div class="quote">"아! 안녕!"</div>
+<div class="quote">"괜찮아! 내가 할게!"</div>
+<div class="quote">"...죽었다고?"</div>
+</section>
 
-<h2 class="title">
-SPRITE ARCHIVE
-</h2>
-
+<section class="section">
+<h2 class="title">SPRITE ARCHIVE</h2>
 <div class="sprite-view">
-
-<button onclick="prevSprite()">
-◀
-</button>
-
-<img
-id="sprite"
-src="images/sprite1.png">
-
-<button onclick="nextSprite()">
-▶
-</button>
-
+<button onclick="prevSprite()">◀</button>
+<img id="sprite" src="images/sprite1.png">
+<button onclick="nextSprite()">▶</button>
 </div>
-
 </section>
 
-<footer>
-
-THE SUBJECT SHOULD BE DEAD.
-
-</footer>
+<footer>THE SUBJECT SHOULD BE DEAD.</footer>
 
 <script>
-
-const sprites = [
-
+const sprites=[
 "images/sprite1.png",
 "images/sprite2.png",
 "images/sprite3.png"
-
 ];
 
-let current = 0;
+let current=0;
 
 function nextSprite(){
-
 current++;
-
-if(current >= sprites.length){
-
-current = 0;
-
-}
-
-document.getElementById("sprite").src = sprites[current];
-
+if(current>=sprites.length) current=0;
+document.getElementById("sprite").src=sprites[current];
 }
 
 function prevSprite(){
-
 current--;
-
-if(current < 0){
-
-current = sprites.length - 1;
-
+if(current<0) current=sprites.length-1;
+document.getElementById("sprite").src=sprites[current];
 }
 
-document.getElementById("sprite").src = sprites[current];
-
+function toggleMemory(){
+document.getElementById("memorySection").classList.toggle("open");
+const flash=document.getElementById("flash");
+flash.classList.add("active");
+setTimeout(()=>flash.classList.remove("active"),600);
 }
-
 </script>
 
 </body>
