@@ -220,31 +220,38 @@ document.getElementById("sprite").src=sprites[current];
 }
 
 function prevSprite(){
-current--;
-if(current<0) current=sprites.length-1;
-document.getElementById("sprite").src=sprites[current];
-}
-
-function toggleMemory(){
-document.getElementById("memorySection").classList.toggle("open");
-const flash=document.getElementById("flash");
-flash.classList.add("active");
-setTimeout(()=>flash.classList.remove("active"),600);
-}
-  <script>
-
-const sprites = [
-...
-];
-
-function nextSprite(){
 ...
 }
 
-function prevSprite(){
-...
+function changeSprite(src){
+
+document
+.getElementById("sprite")
+.src = src;
+
 }
 
+const titleText = "SARIEL";
+
+let i = 0;
+
+function typeTitle(){
+
+if(i < titleText.length){
+
+document
+.getElementById("heroName")
+.innerHTML += titleText.charAt(i);
+
+i++;
+
+setTimeout(typeTitle,150);
+
+}
+
+}
+
+typeTitle();
 </script>
 
 </body>
