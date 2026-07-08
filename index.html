@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>드림주 프로필</title>
+    <style>
+        /* 전체 페이지 스타일 설정 */
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f4f4f9; /* 배경색 (원하는 색상 코드로 변경 가능) */
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        /* 프로필 전체 감싸는 상자 */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* 대제목 스타일 */
+        h1 {
+            text-align: center;
+            color: #4a5568;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 15px;
+        }
+
+        /* 소제목 스타일 */
+        h2 {
+            color: #2d3748;
+            border-left: 5px solid #4a5568;
+            padding-left: 10px;
+            margin-top: 30px;
+        }
+
+        /* 1. 전신 일러스트 및 기본 프로필 배치 */
+        .profile-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* 이미지 들어갈 자리 */
+        .character-img {
+            flex: 1;
+            min-width: 250px;
+            max-width: 350px;
+            background: #e2e8f0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+            overflow: hidden;
+        }
+
+        .character-img img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* 상세 프로필 텍스트 */
+        .profile-details {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .profile-details ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .profile-details li {
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px dashed #edf2f7;
+        }
+
+        .profile-details strong {
+            color: #4a5568;
+            display: inline-block;
+            width: 80px;
+        }
+
+        /* 줄바꿈이 필요한 서사나 과거 내용 박스 */
+        .text-box {
+            background: #f7fafc;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border-left: 3px solid #cbd5e0;
+            white-space: pre-line; /* 엔터 친 대로 줄바꿈 되게 설정 */
+        }
+
+        /* 관계도 스타일 */
+        .relationship-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .relationship-item {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .relationship-name {
+            font-weight: bold;
+            color: #2b6cb0;
+            margin-bottom: 5px;
+        }
+
+        /* 주요 대사 스타일 */
+        .quote {
+            font-style: italic;
+            background: #edf2f7;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4a5568;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 타이틀 -->
+    <h1>✨ 캐릭터 이름 (한글/영문)</h1>
+
+    <!-- 1. 캐 전신 일러 및 프로필 -->
+    <h2>👤 프로필</h2>
+    <div class="profile-section">
+        <!-- 전신 이미지 자리 (나중에 이미지 주소를 src="" 안에 넣으세요) -->
+        <div class="character-img">
+            <img src="https://placeholder.com" alt="캐릭터 전신">
+        </div>
+        <!-- 기본 인포 -->
+        <div class="profile-details">
+            <ul>
+                <li><strong>이름</strong> 캐릭터 이름 입력</li>
+                <li><strong>나이</strong> 00세</li>
+                <li><strong>생일</strong> 0월 0일</li>
+                <li><strong>키/몸무게</strong> 000cm / 00kg</li>
+                <li><strong>소속</strong> 소속 단체나 학교 입력</li>
+                <li><strong>성격</strong> 키워드로 성격을 적어주세요. (예: 활발함, 까칠함)</li>
+                <li><strong>기타</strong> 추가하고 싶은 특이사항이나 설정이 있다면 적어주세요.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 2. 공식 서사 -->
+    <h2>📖 공식 서사</h2>
+    <div class="text-box">
+        여기에 드림주의 메인 스토리나 원작과의 접점, 공식 서사를 자유롭게 적어주세요. 
+        글을 쓸 때 줄바꿈(엔터)을 하면 화면에도 그대로 줄바꿈되어 나타납니다.
+    </div>
+
+    <!-- 3. 과거 -->
+    <h2>⏳ 과거사</h2>
+    <div class="text-box">
+        드림주가 원작 스토리 시점 이전에 겪었던 일이나 숨겨진 과거 이야기를 적어주세요.
+    </div>
+
+    <!-- 4. 관계도 -->
+    <h2>🤝 관계도</h2>
+    <ul class="relationship-list">
+        <li class="relationship-item">
+            <div class="relationship-name">드림캐 이름 (관계 종류: 예 - 연인/혐관)</div>
+            <div>두 사람이 어떻게 만나게 되었는지, 서로를 어떻게 생각하는지 관계 설명을 적어주세요.</div>
+        </li>
+        <li class="relationship-item">
+            <div class="relationship-name">주변 인물 A (관계 종류)</div>
+            <div>다른 원작 캐릭터나 주변 인물들과의 관계를 적어주세요. 리스트를 늘리고 싶다면 이 상자를 복사해서 붙여넣으면 됩니다.</div>
+        </li>
+    </ul>
+
+    <!-- 5. 주요 대사 -->
+    <h2>💬 주요 대사</h2>
+    <div class="quote">"캐릭터가 자주 하거나 상징적인 대사를 여기에 적어주세요."</div>
+    <div class="quote">"두 번째 대사가 있다면 여기에 입력하세요."</div>
+
+</div>
+
+</body>
+</html>
