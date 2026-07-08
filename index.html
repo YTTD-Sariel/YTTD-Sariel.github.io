@@ -71,7 +71,8 @@ footer{padding:80px;text-align:center;font-family:'VT323',monospace;font-size:28
 <div class="system-line">ERROR : DECOMMISSION FAILED</div>
 </div>
 
-<h1 class="hero-name">SARIEL</h1>
+<h1 class="hero-name" id="heroName">
+</h1>
 
 <p class="hero-quote">
 "죽었다고?<br>
@@ -102,7 +103,16 @@ footer{padding:80px;text-align:center;font-family:'VT323',monospace;font-size:28
 <section class="section">
 <h2 class="title">RELATIONSHIP</h2>
 <div class="relationship">
-<div class="node">SOU</div>
+<div class="node tooltip">
+
+SOU
+
+<span class="tooltip-text">
+나를 찾아준 사람.
+나의 구세주.
+</span>
+
+</div>
 <div class="arrow">▶</div>
 <div class="node">SAVIOR</div>
 <div class="arrow">▶</div>
@@ -212,4 +222,27 @@ setTimeout(()=>flash.classList.remove("active"),600);
 </script>
 
 </body>
+  <div class="noise"></div>
 </html>
+
+const titleText = "SARIEL";
+
+let i = 0;
+
+function typeTitle(){
+
+if(i < titleText.length){
+
+document
+.getElementById("heroName")
+.innerHTML += titleText.charAt(i);
+
+i++;
+
+setTimeout(typeTitle,150);
+
+}
+
+}
+
+typeTitle();
