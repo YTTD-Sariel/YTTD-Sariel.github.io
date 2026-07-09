@@ -299,7 +299,7 @@ const titleText = "SARIEL";
 
 let i = 0;
 
-function typeTitle(){
+function (){
 
 if(i < titleText.length){
 
@@ -316,6 +316,26 @@ setTimeout(typeTitle,150);
 }
 
 typeTitle();
+
+function toggleMemory(){
+
+const memory =
+document.getElementById("memorySection");
+
+memory.classList.toggle("open");
+
+const flash =
+document.getElementById("flash");
+
+flash.classList.add("active");
+
+setTimeout(()=>{
+
+flash.classList.remove("active");
+
+},600);
+
+}
 </script>
   <div class="noise"></div>
   
