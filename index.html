@@ -289,25 +289,20 @@ Tsundere
 <footer>THE SUBJECT SHOULD BE DEAD.</footer>
 
 <script>
+
 function changeSprite(src){
-
-document
-.getElementById("sprite")
-.src = src;
-
+document.getElementById("sprite").src = src;
 }
 
 const titleText = "SARIEL";
 
 let i = 0;
 
-function (){
+function typeTitle(){
 
 if(i < titleText.length){
 
-document
-.getElementById("heroName")
-.innerHTML += titleText.charAt(i);
+document.getElementById("heroName").innerHTML += titleText.charAt(i);
 
 i++;
 
