@@ -3,701 +3,1235 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SARIEL_001 // ASUNARO DATABASE</title>
 
-<title>SARIEL_001</title>
-
-<link href="https://fonts.googleapis.com/css2?family=VT323&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 
 <style>
 
+/* ============================================================
+   TOKENS
+   ============================================================ */
 :root{
---bg:#05070b;
---card:#0c1017;
---line:#203447;
---text:#dce7f0;
---accent:#79dfff;
+  --bg:            #05070b;
+  --bg-deep:       #020304;
+  --card:          #0b0f16;
+  --card-hover:    #0e1420;
+  --line:          #1b2b3a;
+  --line-soft:     #12202c;
+  --text:          #d8e5ee;
+  --text-dim:      #6b7f92;
+  --accent:        #79dfff;
+  --accent-soft:   #b7ecff;
+  --silver:        #c7d2da;
+  --error:         #ff5f72;
+  --white:         #f4f8fb;
+  --white-dim:     #c9d3da;
+  --ink:           #1a2733;
+
+  --font-sys:      'VT323', monospace;
+  --font-body:     'Noto Sans KR', sans-serif;
+
+  --ease:          cubic-bezier(.16,.84,.44,1);
 }
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
 }
 
-html{
-scroll-behavior:smooth;
-}
+*{ margin:0; padding:0; box-sizing:border-box; }
+
+html{ scroll-behavior:smooth; background:var(--bg); }
 
 body{
-background:var(--bg);
-color:var(--text);
-font-family:'Noto Sans KR',sans-serif;
-overflow-x:hidden;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  font-weight:300;
+  overflow-x:hidden;
+  position:relative;
 }
 
+@media (pointer:fine){
+  body.cursor-ready{ cursor:none; }
+}
+
+::selection{ background:var(--accent); color:var(--ink); }
+
+a{ color:inherit; }
+
+/* ============================================================
+   CUSTOM CURSOR
+   ============================================================ */
+.cursor-dot,
+.cursor-ring{
+  position:fixed;
+  top:0; left:0;
+  pointer-events:none;
+  z-index:100000;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  will-change:transform;
+}
+.cursor-dot{
+  width:5px; height:5px;
+  background:var(--accent);
+  box-shadow:0 0 8px var(--accent);
+  transition:opacity .2s;
+}
+.cursor-ring{
+  width:26px; height:26px;
+  border:1px solid rgba(121,223,255,.5);
+  transition:width .18s var(--ease), height .18s var(--ease), border-color .18s, opacity .2s;
+}
+.cursor-ring.hover{
+  width:46px; height:46px;
+  border-color:var(--accent);
+}
+@media (pointer:coarse){
+  .cursor-dot,.cursor-ring{ display:none; }
+}
+
+/* ============================================================
+   AMBIENT LAYERS
+   ============================================================ */
 .crt{
-position:fixed;
-inset:0;
-pointer-events:none;
-background:
-repeating-linear-gradient(
-to bottom,
-rgba(255,255,255,.02),
-rgba(255,255,255,.02) 1px,
-transparent 1px,
-transparent 3px
-);
-opacity:.15;
-z-index:9999;
+  position:fixed; inset:0; pointer-events:none; z-index:9999;
+  background:repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,.025),
+    rgba(255,255,255,.025) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode:overlay;
+  opacity:.5;
+}
+.crt::after{
+  content:"";
+  position:absolute; inset:0;
+  background:radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.55) 130%);
+}
+.vignette-flicker{
+  position:fixed; inset:0; pointer-events:none; z-index:9998;
+  background:rgba(121,223,255,.02);
+  animation:crtFlicker 6s infinite;
+}
+@keyframes crtFlicker{
+  0%,92%,100%{ opacity:0; }
+  93%{ opacity:1; }
+  94%{ opacity:0; }
+  95%{ opacity:.6; }
+  96%{ opacity:0; }
 }
 
 .noise{
-position:fixed;
-inset:0;
-pointer-events:none;
-opacity:.03;
-background-image:url("https://www.transparenttextures.com/patterns/noise-pattern-with-subtle-cross-lines.png");
+  position:fixed; inset:0; pointer-events:none; z-index:9997;
+  opacity:.035;
+  background-image:url("https://www.transparenttextures.com/patterns/noise-pattern-with-subtle-cross-lines.png");
 }
 
 .flash-overlay{
-position:fixed;
-inset:0;
-background:white;
-opacity:0;
-pointer-events:none;
-z-index:9998;
+  position:fixed; inset:0; background:#fff; opacity:0;
+  pointer-events:none; z-index:99998;
 }
-
-.flash-overlay.active{
-animation:memoryFlash .7s;
-}
-
+.flash-overlay.active{ animation:memoryFlash 1.1s var(--ease); }
 @keyframes memoryFlash{
-0%{opacity:0;}
-20%{opacity:1;}
-100%{opacity:0;}
+  0%{ opacity:0; }
+  10%{ opacity:1; }
+  14%{ opacity:.2; }
+  18%{ opacity:1; }
+  30%{ opacity:0; }
+  100%{ opacity:0; }
 }
 
+/* drifting error text field */
+.error-field{
+  position:fixed; inset:0; z-index:1; pointer-events:none;
+  overflow:hidden;
+}
+.error-field span{
+  position:absolute;
+  font-family:var(--font-sys);
+  color:var(--accent);
+  opacity:0;
+  letter-spacing:.3em;
+  white-space:nowrap;
+  animation:errorDrift 14s linear infinite;
+}
+@keyframes errorDrift{
+  0%{ opacity:0; transform:translateY(0); }
+  8%{ opacity:.09; }
+  50%{ opacity:.06; }
+  92%{ opacity:0; }
+  100%{ transform:translateY(-40px); }
+}
+
+/* ============================================================
+   BOOT SEQUENCE
+   ============================================================ */
+#boot{
+  position:fixed; inset:0; z-index:999999;
+  background:var(--bg-deep);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-sys);
+  transition:opacity .6s var(--ease), filter .6s var(--ease);
+}
+#boot.hide{
+  opacity:0;
+  filter:brightness(3);
+  pointer-events:none;
+}
+.boot-console{
+  width:min(640px,86vw);
+  min-height:260px;
+}
+.boot-line{
+  font-size:22px;
+  line-height:1.85;
+  color:#42707f;
+  opacity:0;
+  white-space:pre;
+}
+.boot-line.show{ animation:bootIn .25s steps(2) forwards; }
+@keyframes bootIn{
+  0%{ opacity:0; transform:translateX(-6px); }
+  100%{ opacity:1; transform:translateX(0); }
+}
+.boot-line.b-dead{ color:#5a6b78; text-decoration:line-through; }
+.boot-line.b-error{ color:var(--error); text-shadow:0 0 8px rgba(255,95,114,.6); }
+.boot-line.b-active{ color:var(--accent); text-shadow:0 0 12px var(--accent); }
+.boot-line.b-glitch{ animation:bootIn .25s steps(2) forwards, glitchText .12s steps(2) 3; }
+.boot-cursor-blink{
+  display:inline-block; width:11px; height:20px; background:var(--accent);
+  animation:blink 1s step-end infinite; vertical-align:-3px; margin-left:4px;
+}
+@keyframes blink{ 50%{ opacity:0; } }
+@keyframes glitchText{
+  0%{ transform:translate(0); }
+  33%{ transform:translate(-2px,1px); }
+  66%{ transform:translate(2px,-1px); }
+  100%{ transform:translate(0); }
+}
+
+/* ============================================================
+   LAYOUT PRIMITIVES
+   ============================================================ */
+.section{
+  width:min(1100px,90%);
+  margin:auto;
+  padding:130px 0;
+  border-top:1px solid var(--line-soft);
+  position:relative;
+  z-index:2;
+  opacity:0;
+  transform:translateY(28px);
+  transition:opacity .9s var(--ease), transform .9s var(--ease);
+}
+.section.in-view{ opacity:1; transform:translateY(0); }
+
+.eyebrow{
+  font-family:var(--font-sys);
+  font-size:18px;
+  letter-spacing:.35em;
+  color:var(--text-dim);
+  margin-bottom:14px;
+}
+.title{
+  font-family:var(--font-sys);
+  font-size:58px;
+  color:var(--accent);
+  margin-bottom:46px;
+  letter-spacing:.02em;
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
 .hero{
-min-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:60px;
+  min-height:100vh;
+  display:flex; align-items:center; justify-content:center;
+  padding:60px 24px;
+  position:relative;
+  z-index:2;
 }
-
 .hero-wrap{
-width:min(1300px,95%);
-display:grid;
-grid-template-columns:1fr 550px;
-gap:60px;
-align-items:center;
+  width:min(1300px,95%);
+  display:grid;
+  grid-template-columns:1fr 520px;
+  gap:60px;
+  align-items:center;
 }
 
 .system-box{
-border:1px solid var(--line);
-padding:25px;
-background:rgba(255,255,255,.02);
-margin-bottom:25px;
+  border:1px solid var(--line);
+  padding:26px 28px;
+  background:rgba(255,255,255,.015);
+  margin-bottom:28px;
+  position:relative;
 }
-
+.system-box::before{
+  content:"DB//SUBJECT_LOOKUP";
+  position:absolute; top:-11px; left:20px;
+  background:var(--bg);
+  padding:0 8px;
+  font-family:var(--font-sys);
+  font-size:14px;
+  color:var(--text-dim);
+  letter-spacing:.2em;
+}
 .system-title{
-font-family:'VT323',monospace;
-font-size:34px;
-color:var(--accent);
-margin-bottom:10px;
+  font-family:var(--font-sys);
+  font-size:30px;
+  color:var(--accent);
+  margin-bottom:8px;
+  letter-spacing:.1em;
 }
-
 .system-line{
-font-family:'VT323',monospace;
-font-size:24px;
-line-height:1.6;
+  font-family:var(--font-sys);
+  font-size:22px;
+  line-height:1.65;
 }
-
-.dead{
-color:#7c8793;
-text-decoration:line-through;
-}
-
-.error{
-color:#ff7070;
-}
-
-.active{
-color:#79dfff;
-text-shadow:0 0 10px #79dfff;
-}
+.dead{ color:#5a6b78; text-decoration:line-through; }
+.error{ color:var(--error); text-shadow:0 0 8px rgba(255,95,114,.5); }
+.active{ color:var(--accent); text-shadow:0 0 10px var(--accent); }
 
 .hero-name{
-font-family:'VT323',monospace;
-font-size:120px;
-color:var(--accent);
-text-shadow:0 0 20px var(--accent);
+  font-family:var(--font-sys);
+  font-size:132px;
+  line-height:1;
+  color:var(--accent);
+  text-shadow:0 0 24px rgba(121,223,255,.55);
+  min-height:132px;
+}
+.hero-name .caret{
+  display:inline-block;
+  width:.5em; background:var(--accent);
+  animation:blink 1s step-end infinite;
+  vertical-align:-.08em;
 }
 
 .hero-quote{
-font-size:24px;
-margin-top:20px;
-line-height:1.8;
+  font-size:23px;
+  font-weight:300;
+  margin-top:22px;
+  line-height:1.85;
+  color:var(--silver);
+  border-left:2px solid var(--line);
+  padding-left:18px;
 }
 
-.tags{
-display:flex;
-gap:10px;
-flex-wrap:wrap;
-margin-top:30px;
-}
-
+.tags{ display:flex; gap:10px; flex-wrap:wrap; margin-top:32px; }
 .tags span{
-padding:8px 15px;
-border:1px solid var(--accent);
-font-family:'VT323',monospace;
-font-size:22px;
+  padding:8px 16px;
+  border:1px solid var(--accent);
+  font-family:var(--font-sys);
+  font-size:20px;
+  letter-spacing:.1em;
+  color:var(--accent-soft);
+  transition:background .25s, color .25s;
 }
+.tags span:hover{ background:var(--accent); color:var(--ink); }
 
+.hero-portrait{
+  position:relative;
+  display:flex; align-items:center; justify-content:center;
+}
+.hero-halo{
+  position:absolute;
+  width:120%; aspect-ratio:1;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(244,248,251,.5) 0%, rgba(244,248,251,.14) 42%, transparent 72%);
+  filter:blur(60px);
+  animation:haloBreathe 7s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes haloBreathe{
+  0%,100%{ opacity:.7; transform:scale(1); }
+  50%{ opacity:1; transform:scale(1.06); }
+}
 .hero-image{
-width:100%;
-max-height:85vh;
-object-fit:contain;
+  width:100%; max-height:82vh;
+  object-fit:contain;
+  position:relative; z-index:2;
+  filter:drop-shadow(0 0 30px rgba(121,223,255,.15));
+}
+.img-fallback{
+  width:100%; aspect-ratio:3/4;
+  border:1px dashed var(--line);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-sys); color:var(--text-dim); font-size:18px;
+  text-align:center; padding:20px; position:relative; z-index:2;
+  letter-spacing:.05em;
 }
 
-.section{
-width:min(1100px,90%);
-margin:auto;
-padding:120px 0;
-border-top:1px solid var(--line);
+.scroll-cue{
+  position:absolute; bottom:36px; left:50%; transform:translateX(-50%);
+  font-family:var(--font-sys); font-size:16px; color:var(--text-dim);
+  letter-spacing:.3em; display:flex; flex-direction:column; align-items:center; gap:8px;
+  animation:cueBob 2.4s ease-in-out infinite;
+}
+.scroll-cue::after{ content:""; width:1px; height:34px; background:linear-gradient(var(--accent),transparent); }
+@keyframes cueBob{ 0%,100%{ transform:translate(-50%,0); } 50%{ transform:translate(-50%,8px); } }
+
+/* ============================================================
+   OFFICIAL STORY — file listing
+   ============================================================ */
+.file-list{ border:1px solid var(--line); }
+.file-row{
+  border-bottom:1px solid var(--line);
+  cursor:pointer;
+}
+.file-row:last-child{ border-bottom:none; }
+.file-head{
+  display:flex; align-items:center; gap:20px;
+  padding:22px 26px;
+  transition:background .2s;
+}
+.file-row:hover .file-head{ background:rgba(121,223,255,.04); }
+.file-id{
+  font-family:var(--font-sys); font-size:26px; color:var(--accent);
+  width:110px; flex-shrink:0;
+}
+.file-meta{ flex:1; }
+.file-meta h4{
+  font-family:var(--font-sys); font-size:24px; font-weight:400;
+  letter-spacing:.08em; color:var(--text);
+}
+.file-meta small{ color:var(--text-dim); font-size:13px; letter-spacing:.1em; }
+.file-chevron{
+  font-family:var(--font-sys); font-size:22px; color:var(--text-dim);
+  transition:transform .3s var(--ease);
+}
+.file-row.open .file-chevron{ transform:rotate(90deg); color:var(--accent); }
+.file-body{
+  max-height:0; overflow:hidden;
+  transition:max-height .5s var(--ease);
+}
+.file-row.open .file-body{ max-height:400px; }
+.file-body-inner{
+  padding:0 26px 28px 156px;
+  line-height:1.9;
+  color:var(--silver);
+  font-size:16px;
 }
 
-.title{
-font-family:'VT323',monospace;
-font-size:60px;
-color:var(--accent);
-margin-bottom:40px;
-}
-
-.card{
-border:1px solid var(--line);
-padding:30px;
-background:rgba(255,255,255,.02);
-line-height:2;
-}
-
+/* ============================================================
+   RELATIONSHIP — tag map
+   ============================================================ */
 .relation-wrap{
-display:flex;
-justify-content:center;
-align-items:center;
-gap:40px;
-flex-wrap:wrap;
+  display:flex; justify-content:center; align-items:center;
+  gap:36px; flex-wrap:wrap;
 }
-
 .relation-card{
-width:420px;
-padding:30px;
-border:1px solid var(--line);
-background:rgba(255,255,255,.02);
+  width:400px; padding:34px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.015);
+  position:relative;
 }
-
 .relation-card h3{
-font-family:'VT323',monospace;
-font-size:40px;
-color:var(--accent);
-margin-bottom:20px;
+  font-family:var(--font-sys); font-size:32px; color:var(--accent);
+  margin-bottom:6px; letter-spacing:.06em;
 }
-
+.relation-card .role{
+  font-size:12px; letter-spacing:.2em; color:var(--text-dim); margin-bottom:20px;
+  text-transform:uppercase;
+}
+.relation-tags{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; }
+.relation-tags span{
+  font-family:var(--font-sys);
+  font-size:17px;
+  padding:4px 12px;
+  border:1px solid var(--line);
+  color:var(--accent-soft);
+}
+.relation-card p{ font-size:15px; line-height:1.9; color:var(--silver); }
 .relation-line{
-font-size:60px;
-color:var(--accent);
+  font-size:44px; color:var(--accent);
+  font-family:var(--font-sys);
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  opacity:.85;
 }
+.relation-line small{ font-size:12px; letter-spacing:.2em; color:var(--text-dim); }
 
+/* ============================================================
+   MEMORY — white flash reveal
+   ============================================================ */
+.memory-shell{
+  border:1px solid var(--line);
+  padding:40px;
+  background:rgba(255,255,255,.015);
+}
 .memory-btn{
-background:none;
-border:1px solid var(--accent);
-color:var(--accent);
-padding:15px 25px;
-cursor:pointer;
-font-family:'VT323',monospace;
-font-size:28px;
+  background:none;
+  border:1px solid var(--accent);
+  color:var(--accent);
+  padding:16px 28px;
+  cursor:pointer;
+  font-family:var(--font-sys);
+  font-size:22px;
+  letter-spacing:.15em;
+  transition:background .25s, color .25s;
+}
+.memory-btn:hover{ background:var(--accent); color:var(--ink); }
+.memory-prompt{
+  font-family:var(--font-sys); color:var(--text-dim); font-size:16px;
+  margin-top:14px; letter-spacing:.05em;
 }
 
 .memory-hidden{
-max-height:0;
-overflow:hidden;
-transition:max-height .8s ease;
+  max-height:0; overflow:hidden;
+  transition:max-height 1s var(--ease);
 }
-
-.memory-hidden.open{
-max-height:3000px;
-}
+.memory-hidden.open{ max-height:2400px; }
 
 .memory-content{
-background:white;
-color:#243748;
-padding:80px;
-margin-top:40px;
-border-radius:12px;
-box-shadow:0 0 100px rgba(255,255,255,.25);
-line-height:2;
+  background:var(--white);
+  color:var(--ink);
+  padding:70px 60px;
+  margin-top:36px;
+  line-height:2;
+  position:relative;
+  overflow:hidden;
+}
+.memory-content::before{
+  content:"";
+  position:absolute; inset:0;
+  background:radial-gradient(circle at 20% 15%, rgba(121,223,255,.18), transparent 55%);
+  pointer-events:none;
+}
+.memory-content h3{
+  font-family:var(--font-sys); font-size:40px;
+  color:#3d6d80; margin-bottom:26px; letter-spacing:.03em;
+}
+.memory-content p{ font-size:16px; color:#33475a; max-width:640px; }
+.memory-content .memory-tag{
+  display:inline-block; font-family:var(--font-sys); font-size:14px;
+  letter-spacing:.2em; color:#6a8ea0; margin-bottom:20px;
+  border-bottom:1px solid #b9d6e0; padding-bottom:6px;
 }
 
+/* ============================================================
+   DEATH LOG — glitch transition sequence
+   ============================================================ */
+.deathlog{
+  position:relative;
+  min-height:100vh;
+  display:flex; align-items:center; justify-content:center;
+  padding:120px 24px;
+  background:var(--bg-deep);
+  overflow:hidden;
+  border-top:1px solid var(--line-soft);
+}
+.deathlog-inner{
+  position:relative;
+  width:min(900px,92vw);
+  text-align:center;
+  z-index:3;
+}
+.deathlog .eyebrow{ justify-content:center; text-align:center; }
+.deathlog-title{
+  font-family:var(--font-sys);
+  font-size:64px;
+  color:var(--text-dim);
+  letter-spacing:.06em;
+  transition:color 1.6s ease, text-shadow 1.6s ease;
+}
+.deathlog.trigger .deathlog-title{
+  color:var(--white);
+  text-shadow:0 0 30px rgba(244,248,251,.8);
+}
+.deathlog-sub{
+  margin-top:22px;
+  font-size:17px;
+  color:var(--text-dim);
+  line-height:1.9;
+  transition:color 1.6s ease;
+}
+.deathlog.trigger .deathlog-sub{ color:var(--ink); }
+
+.deathlog-panel{
+  position:absolute; inset:0;
+  background:var(--bg-deep);
+  transition:background 1.8s ease 1.4s;
+  z-index:0;
+}
+.deathlog.trigger .deathlog-panel{ background:var(--white); }
+
+.kernel-dump{
+  position:absolute; inset:0; z-index:1;
+  font-family:var(--font-sys);
+  font-size:12px; line-height:1.5;
+  color:#274050;
+  padding:20px;
+  white-space:pre-wrap;
+  opacity:0;
+  overflow:hidden;
+}
+.deathlog.trigger .kernel-dump{
+  animation:kernelFlicker 1.6s steps(6) forwards;
+}
+@keyframes kernelFlicker{
+  0%{ opacity:0; }
+  15%{ opacity:.9; }
+  30%{ opacity:.15; }
+  45%{ opacity:.8; }
+  60%{ opacity:.1; }
+  75%{ opacity:0; }
+  100%{ opacity:0; }
+}
+
+.glitch-slice{
+  position:absolute; left:0; right:0; height:6%;
+  background:var(--white);
+  mix-blend-mode:difference;
+  opacity:0;
+  z-index:2;
+}
+.deathlog.trigger .glitch-slice{ animation:sliceGlitch 1.2s steps(1) forwards; }
+@keyframes sliceGlitch{
+  0%{ opacity:0; transform:translateX(0); }
+  10%{ opacity:1; transform:translateX(-4%); }
+  20%{ opacity:0; transform:translateX(3%); }
+  35%{ opacity:1; transform:translateX(2%); }
+  50%{ opacity:0; }
+  100%{ opacity:0; }
+}
+
+.deathlog-caption{
+  margin-top:40px;
+  font-family:var(--font-sys);
+  font-size:18px;
+  letter-spacing:.25em;
+  color:var(--text-dim);
+  opacity:0;
+  transition:opacity 1.2s ease 2.4s;
+}
+.deathlog.trigger .deathlog-caption{ opacity:1; }
+
+/* ============================================================
+   VOICE SAMPLE — tabs
+   ============================================================ */
+.voice-tabs{ display:flex; gap:10px; margin-bottom:28px; flex-wrap:wrap; }
+.voice-tab{
+  background:none; border:1px solid var(--line); color:var(--text-dim);
+  font-family:var(--font-sys); font-size:19px; letter-spacing:.1em;
+  padding:10px 20px; cursor:pointer; transition:all .2s;
+}
+.voice-tab.active{ border-color:var(--accent); color:var(--accent); background:rgba(121,223,255,.06); }
+.voice-panel{ display:none; }
+.voice-panel.active{ display:block; animation:fadeUp .4s var(--ease); }
+@keyframes fadeUp{ from{ opacity:0; transform:translateY(8px);} to{ opacity:1; transform:translateY(0);} }
 .quote{
-border-left:3px solid var(--accent);
-padding:20px;
-margin-bottom:20px;
-background:rgba(255,255,255,.02);
+  border-left:3px solid var(--accent);
+  padding:20px 24px;
+  margin-bottom:16px;
+  background:rgba(255,255,255,.02);
+  font-size:17px;
+  line-height:1.8;
 }
+.quote small{ display:block; margin-top:8px; color:var(--text-dim); font-family:var(--font-sys); font-size:13px; letter-spacing:.15em; }
 
-.sprite-gallery{
-display:flex;
-flex-direction:column;
-align-items:center;
+/* ============================================================
+   SPRITE ARCHIVE
+   ============================================================ */
+.sprite-gallery{ display:flex; flex-direction:column; align-items:center; }
+.sprite-frame{
+  width:500px; max-width:90%; aspect-ratio:3/4;
+  border:1px solid var(--line);
+  display:flex; align-items:center; justify-content:center;
+  position:relative; overflow:hidden;
+  background:rgba(255,255,255,.015);
 }
-
 .main-sprite{
-width:500px;
-max-width:90%;
+  width:100%; height:100%; object-fit:contain;
+  opacity:1; transition:opacity .25s ease;
 }
-
+.main-sprite.swap{ opacity:0; }
+.sprite-frame .img-fallback{ position:absolute; border:none; }
 .sprite-buttons{
-display:flex;
-flex-wrap:wrap;
-justify-content:center;
-gap:10px;
-margin-top:30px;
+  display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:30px;
 }
-
 .sprite-buttons button{
-background:none;
-border:1px solid var(--accent);
-color:var(--accent);
-padding:10px 15px;
-font-family:'VT323',monospace;
-font-size:22px;
-cursor:pointer;
+  background:none; border:1px solid var(--line); color:var(--text-dim);
+  padding:10px 16px; font-family:var(--font-sys); font-size:20px;
+  letter-spacing:.06em; cursor:pointer; transition:all .2s;
 }
+.sprite-buttons button.active,
+.sprite-buttons button:hover{ border-color:var(--accent); color:var(--accent); }
 
+/* ============================================================
+   FOOTER + EASTER EGG
+   ============================================================ */
 footer{
-padding:100px;
-text-align:center;
-font-family:'VT323',monospace;
-font-size:30px;
-color:#667a8d;
+  padding:110px 24px 60px;
+  text-align:center;
+  position:relative; z-index:2;
 }
-.story-grid{
-
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:20px;
-
+.footer-line{
+  font-family:var(--font-sys);
+  font-size:30px;
+  color:#576b7d;
+  letter-spacing:.08em;
+  cursor:pointer;
+  display:inline-block;
+  transition:color .3s, text-shadow .3s;
 }
-
-.story-card{
-
-padding:25px;
-
-border:1px solid var(--line);
-
-background:rgba(255,255,255,.02);
-
+.footer-line:hover{ color:var(--error); text-shadow:0 0 14px rgba(255,95,114,.5); }
+.footer-hint{
+  display:block; margin-top:10px; font-size:12px; letter-spacing:.2em;
+  color:var(--text-dim); font-family:var(--font-sys); opacity:.7;
 }
 
-.story-card h3{
-
-font-family:'VT323',monospace;
-font-size:40px;
-color:var(--accent);
-
+.egg-overlay{
+  position:fixed; inset:0; z-index:100001;
+  background:rgba(2,3,4,.92);
+  display:flex; align-items:center; justify-content:center;
+  padding:24px;
+  opacity:0; pointer-events:none;
+  transition:opacity .35s ease;
 }
-
-.story-card h4{
-
-margin-bottom:20px;
-opacity:.7;
-
+.egg-overlay.open{ opacity:1; pointer-events:all; }
+.egg-panel{
+  width:min(700px,92vw);
+  max-height:80vh; overflow-y:auto;
+  border:1px solid var(--error);
+  background:var(--bg-deep);
+  padding:40px;
+  box-shadow:0 0 60px rgba(255,95,114,.15);
 }
-
-.story-card p{
-line-height:1.8;
+.egg-panel h2{
+  font-family:var(--font-sys); font-size:38px; color:var(--error);
+  letter-spacing:.08em; margin-bottom:6px;
+  animation:glitchText .15s steps(2) infinite;
 }
-
-#boot{
-position:fixed;
-inset:0;
-background:#020304;
-z-index:99999;
-display:flex;
-justify-content:center;
-align-items:center;
-font-family:'VT323',monospace;
-font-size:40px;
-color:#79dfff;
+.egg-panel .egg-sub{
+  font-family:var(--font-sys); font-size:15px; color:var(--text-dim);
+  letter-spacing:.15em; margin-bottom:30px;
 }
-
-.boot-text{
-text-align:center;
-animation:flickerBoot .15s infinite;
+.egg-record{ margin-bottom:24px; border-left:2px solid var(--error); padding-left:18px; }
+.egg-record h4{
+  font-family:var(--font-sys); font-size:20px; color:var(--accent-soft);
+  letter-spacing:.08em; margin-bottom:6px;
 }
-
-@keyframes flickerBoot{
-0%{opacity:.7;}
-50%{opacity:1;}
-100%{opacity:.8;}
+.egg-record p{ font-size:14px; line-height:1.85; color:var(--silver); }
+.egg-record .redacted{
+  background:#222; color:#222; user-select:none; padding:0 4px; border-radius:2px;
 }
+.egg-close{
+  margin-top:20px;
+  background:none; border:1px solid var(--text-dim); color:var(--text-dim);
+  font-family:var(--font-sys); font-size:16px; letter-spacing:.1em;
+  padding:10px 20px; cursor:pointer;
+}
+.egg-close:hover{ border-color:var(--error); color:var(--error); }
 
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
 @media(max-width:900px){
-
-.hero-wrap{
-grid-template-columns:1fr;
+  .hero-wrap{ grid-template-columns:1fr; }
+  .hero-name{ font-size:76px; min-height:76px; }
+  .title{ font-size:42px; }
+  .section{ padding:90px 0; }
+  .deathlog-title{ font-size:38px; }
+  .file-body-inner{ padding-left:26px; }
+  .memory-content{ padding:44px 26px; }
 }
-
-.hero-name{
-font-size:70px;
-}
-  
-}
-
-  #boot{
-
-position:fixed;
-inset:0;
-
-background:#020304;
-
-z-index:99999;
-
-display:flex;
-justify-content:center;
-align-items:center;
-
-font-family:'VT323',monospace;
-
-font-size:40px;
-
-color:#79dfff;
-
-}
-
-.boot-text{
-
-animation:flickerBoot .15s infinite;
-
-}
-
-@keyframes flickerBoot{
-
-0%{opacity:.7;}
-50%{opacity:1;}
-100%{opacity:.8;}
-
+@media(max-width:520px){
+  .hero-name{ font-size:56px; min-height:56px; }
+  .relation-card{ width:100%; }
 }
 
 </style>
 </head>
 
 <body>
-<div id="boot" style="display:flex;">
 
-<div class="boot-text">
-
-ASUNARO SYSTEM<br><br>
-
-BOOTING...<br>
-BOOTING...<br>
-BOOTING...<br><br>
-
-SUBJECT FOUND<br>
-
-SARIEL_001
-
+<!-- BOOT SEQUENCE -->
+<div id="boot">
+  <div class="boot-console" id="bootConsole"></div>
 </div>
 
-</div>
-  
+<!-- CUSTOM CURSOR -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- AMBIENT LAYERS -->
 <div class="noise"></div>
-<div id="flash" class="flash-overlay"></div>
 <div class="crt"></div>
+<div class="vignette-flicker"></div>
+<div id="flash" class="flash-overlay"></div>
+<div class="error-field" id="errorField"></div>
 
+<!-- HERO -->
 <section class="hero">
+  <div class="hero-wrap">
+    <div>
+      <div class="system-box">
+        <div class="system-title">ASUNARO DATABASE</div>
+        <div class="system-line dead">STATUS&nbsp;: DECEASED</div>
+        <div class="system-line error">ERROR DETECTED</div>
+        <div class="system-line active">STATUS&nbsp;: ACTIVE</div>
+        <div class="system-line">CAUSE&nbsp;&nbsp;: UNKNOWN</div>
+        <div class="system-line">REBOOT&nbsp;: SUCCESSFUL</div>
+        <div class="system-line">TYPE&nbsp;&nbsp;&nbsp;: HALF HUMAN / HALF DOLL</div>
+        <div class="system-line">SUBJECT : SARIEL_001</div>
+      </div>
 
-<div class="hero-wrap">
+      <h1 class="hero-name" id="heroName"></h1>
 
-<div>
+      <p class="hero-quote">
+        "죽었다고?<br>
+        그런데 나 지금 움직이고 있잖아."
+      </p>
 
-<div class="system-box">
+      <div class="tags">
+        <span>FOOLISH</span>
+        <span>NATURAL</span>
+        <span>ATHLETIC</span>
+      </div>
+    </div>
 
-<div class="system-title">
-ASUNARO DATABASE
-</div>
+    <div class="hero-portrait">
+      <div class="hero-halo"></div>
+      <img src="Image/프로필.png" class="hero-image" alt="Sariel profile"
+           onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'img-fallback',innerText:'IMG_MISSING\n프로필.png'}))">
+    </div>
+  </div>
 
-<div class="system-line dead">
-STATUS : DECEASED
-</div>
-
-<div class="system-line error">
-ERROR DETECTED
-</div>
-
-<div class="system-line active">
-STATUS : ACTIVE
-</div>
-
-<div class="system-line">
-CAUSE : UNKNOWN
-</div>
-
-<div class="system-line">
-REBOOT SUCCESSFUL
-</div>
-
-<div class="system-line">
-TYPE : HALF HUMAN / HALF DOLL
-</div>
-
-<div class="system-line">
-SUBJECT : SARIEL_001
-</div>
-
-</div>
-
-<h1 class="hero-name" id="heroName"></h1>
-
-<p class="hero-quote">
-"죽었다고?<br>
-그런데 나 지금 움직이고 있잖아."
-</p>
-
-<div class="tags">
-<span>FOOLISH</span>
-<span>NATURAL</span>
-<span>ATHLETIC</span>
-</div>
-
-</div>
-
-<div>
-
-<img src="Image/프로필.png" class="hero-image">
-
-</div>
-
-</div>
-
+  <div class="scroll-cue">SCROLL</div>
 </section>
 
+<!-- OFFICIAL STORY -->
 <section class="section">
+  <div class="eyebrow">RECORD // 01</div>
+  <h2 class="title">OFFICIAL STORY</h2>
 
-<h2 class="title">
-OFFICIAL STORY
-</h2>
+  <div class="file-list" id="fileList">
+    <div class="file-row">
+      <div class="file-head">
+        <span class="file-id">FILE_01</span>
+        <div class="file-meta">
+          <h4>DISCOVERY</h4>
+          <small>ACCESS LEVEL : PUBLIC</small>
+        </div>
+        <span class="file-chevron">▸</span>
+      </div>
+      <div class="file-body"><div class="file-body-inner">공식서사1</div></div>
+    </div>
 
-<div class="story-grid">
+    <div class="file-row">
+      <div class="file-head">
+        <span class="file-id">FILE_02</span>
+        <div class="file-meta">
+          <h4>OBSERVATION</h4>
+          <small>ACCESS LEVEL : PUBLIC</small>
+        </div>
+        <span class="file-chevron">▸</span>
+      </div>
+      <div class="file-body"><div class="file-body-inner">공식서사2</div></div>
+    </div>
 
-<div class="story-card">
-<h3>FILE_01</h3>
-<h4>DISCOVERY</h4>
-<p>
-공식서사1
-</p>
-</div>
+    <div class="file-row">
+      <div class="file-head">
+        <span class="file-id">FILE_03</span>
+        <div class="file-meta">
+          <h4>TERMINATION FAILURE</h4>
+          <small>ACCESS LEVEL : PUBLIC</small>
+        </div>
+        <span class="file-chevron">▸</span>
+      </div>
+      <div class="file-body"><div class="file-body-inner">공식서사3</div></div>
+    </div>
 
-<div class="story-card">
-<h3>FILE_02</h3>
-<h4>OBSERVATION</h4>
-<p>
-공식서사2
-</p>
-</div>
-
-<div class="story-card">
-<h3>FILE_03</h3>
-<h4>TERMINATION FAILURE</h4>
-<p>
-공식서사3
-</p>
-</div>
-
-</div>
-
+    <div class="file-row">
+      <div class="file-head">
+        <span class="file-id">FILE_04</span>
+        <div class="file-meta">
+          <h4>UNCLASSIFIED</h4>
+          <small>ACCESS LEVEL : RESTRICTED</small>
+        </div>
+        <span class="file-chevron">▸</span>
+      </div>
+      <div class="file-body"><div class="file-body-inner">공식서사4</div></div>
+    </div>
+  </div>
 </section>
 
+<!-- RELATIONSHIP -->
 <section class="section">
+  <div class="eyebrow">RECORD // 02</div>
+  <h2 class="title">RELATIONSHIP</h2>
 
-<h2 class="title">
-RELATIONSHIP
-</h2>
+  <div class="relation-wrap">
+    <div class="relation-card">
+      <h3>SARIEL</h3>
+      <div class="role">→ SOU</div>
+      <div class="relation-tags">
+        <span>구세주</span><span>신뢰</span><span>동경</span><span>의존</span>
+      </div>
+      <p>
+        나를 발견해준 사람.<br>
+        나의 구세주.<br>
+        세상에서 가장 믿는 존재.
+      </p>
+    </div>
 
-<div class="relation-wrap">
+    <div class="relation-line">⇄<small>LINK ACTIVE</small></div>
 
-<div class="relation-card">
-
-<h3>SARIEL → SOU</h3>
-
-<p>
-나를 발견해준 사람.<br>
-나의 구세주.<br>
-세상에서 가장 믿는 존재.
-</p>
-
-</div>
-
-<div class="relation-line">
-⇄
-</div>
-
-<div class="relation-card">
-
-<h3>SOU → SARIEL</h3>
-
-<p>
-처음에는 이용하기 좋은 참가자.<br>
-다루기 쉬운 말.<br>
-그러나 시간이 지나며 단순한 도구로만 남지 못했다.
-</p>
-
-</div>
-
-</div>
-
+    <div class="relation-card">
+      <h3>SOU</h3>
+      <div class="role">→ SARIEL</div>
+      <div class="relation-tags">
+        <span>관찰</span><span>이용</span><span>관리</span>
+      </div>
+      <p>
+        처음에는 이용하기 좋은 참가자.<br>
+        다루기 쉬운 말.<br>
+        그러나 시간이 지나며 단순한 도구로만 남지 못했다.
+      </p>
+    </div>
+  </div>
 </section>
 
+<!-- MEMORY -->
 <section class="section">
+  <div class="eyebrow">RECORD // 03</div>
+  <h2 class="title">MEMORIES</h2>
 
-<h2 class="title">
-MEMORIES
-</h2>
+  <div class="memory-shell">
+    <button class="memory-btn" id="memoryBtn" onclick="toggleMemory()">OPEN MEMORY FILE</button>
+    <div class="memory-prompt" id="memoryPrompt">ACCESS MEMORY FILE?</div>
 
-<button class="memory-btn" onclick="toggleMemory()">
-OPEN MEMORY FILE
-</button>
-
-<div id="memorySection" class="memory-hidden">
-
-<div class="memory-content">
-
-<h3 style="font-size:42px;margin-bottom:30px;">
-Before Everything
-</h3>
-
-<p>
-인간 시절의 과거 작성.
-</p>
-
-</div>
-
-</div>
-
+    <div id="memorySection" class="memory-hidden">
+      <div class="memory-content">
+        <span class="memory-tag">BEFORE EVERYTHING</span>
+        <h3>인간 시절</h3>
+        <p>인간 시절의 과거 작성.</p>
+      </div>
+    </div>
+  </div>
 </section>
 
-<section class="section">
+<!-- DEATH LOG -->
+<section class="deathlog" id="deathlog">
+  <div class="deathlog-panel"></div>
+  <div class="kernel-dump" id="kernelDump"></div>
+  <div class="glitch-slice" style="top:18%;"></div>
+  <div class="glitch-slice" style="top:44%; animation-delay:.08s;"></div>
+  <div class="glitch-slice" style="top:71%; animation-delay:.15s;"></div>
 
-<h2 class="title">
-VOICE SAMPLE
-</h2>
-
-<div class="quote">
-"아! 안녕!"
-</div>
-
-<div class="quote">
-"괜찮아! 내가 할게!"
-</div>
-
-<div class="quote">
-"...죽었다고?"
-</div>
-
+  <div class="deathlog-inner">
+    <div class="eyebrow">RECORD // 04 — UNSCHEDULED</div>
+    <div class="deathlog-title">SIGNAL LOST</div>
+    <p class="deathlog-sub">
+      —not syncing—<br>
+      기록이 끊긴 지점. 사리엘이 처음으로 멈춘 순간.
+    </p>
+    <div class="deathlog-caption">STATUS : DECEASED → REBOOT SUCCESSFUL</div>
+  </div>
 </section>
 
+<!-- VOICE SAMPLE -->
 <section class="section">
+  <div class="eyebrow">RECORD // 05</div>
+  <h2 class="title">VOICE SAMPLE</h2>
 
-<h2 class="title">
-SPRITE ARCHIVE
-</h2>
+  <div class="voice-tabs" id="voiceTabs">
+    <button class="voice-tab active" data-tab="normal">NORMAL</button>
+    <button class="voice-tab" data-tab="happy">HAPPY</button>
+    <button class="voice-tab" data-tab="angry">ANGRY</button>
+    <button class="voice-tab" data-tab="broken">BROKEN</button>
+  </div>
 
-<div class="sprite-gallery">
+  <div class="voice-panel active" data-panel="normal">
+    <div class="quote">"아! 안녕!"<small>NORMAL</small></div>
+  </div>
+  <div class="voice-panel" data-panel="happy">
+    <div class="quote">"괜찮아! 내가 할게!"<small>HAPPY</small></div>
+  </div>
+  <div class="voice-panel" data-panel="angry">
+    <div class="quote">추가 대사 작성 예정<small>ANGRY</small></div>
+  </div>
+  <div class="voice-panel" data-panel="broken">
+    <div class="quote">"...죽었다고?"<small>BROKEN</small></div>
+  </div>
+</section>
 
-<img
-id="sprite"
-class="main-sprite"
-src="Image/Sariel_Natural.png">
+<!-- SPRITE ARCHIVE -->
+<section class="section">
+  <div class="eyebrow">RECORD // 06</div>
+  <h2 class="title">SPRITE ARCHIVE</h2>
 
-<div class="sprite-buttons">
+  <div class="sprite-gallery">
+    <div class="sprite-frame">
+      <img id="sprite" class="main-sprite" src="Image/Sariel_Natural.png" alt="Sariel sprite"
+           onerror="this.style.display='none'; document.getElementById('spriteFallback').style.display='flex';">
+      <div id="spriteFallback" class="img-fallback" style="display:none;">IMG_MISSING</div>
+    </div>
 
-<button onclick="changeSprite('Image/Sariel_Natural.png')">Natural</button>
-<button onclick="changeSprite('Image/Sariel_Joy.png')">Joy</button>
-<button onclick="changeSprite('Image/Sariel_Anger.png')">Anger</button>
-<button onclick="changeSprite('Image/Sariel_Awkward.png')">Awkward</button>
-<button onclick="changeSprite('Image/Sariel_Panic.png')">Panic</button>
-<button onclick="changeSprite('Image/Sariel_Thinking.png')">Thinking</button>
-<button onclick="changeSprite('Image/Sariel_Tsundere.png')">Tsundere</button>
-
-</div>
-
-</div>
-
+    <div class="sprite-buttons" id="spriteButtons">
+      <button class="active" data-src="Image/Sariel_Natural.png">Natural</button>
+      <button data-src="Image/Sariel_Joy.png">Joy</button>
+      <button data-src="Image/Sariel_Anger.png">Anger</button>
+      <button data-src="Image/Sariel_Awkward.png">Awkward</button>
+      <button data-src="Image/Sariel_Panic.png">Panic</button>
+      <button data-src="Image/Sariel_Thinking.png">Thinking</button>
+      <button data-src="Image/Sariel_Tsundere.png">Tsundere</button>
+    </div>
+  </div>
 </section>
 
 <footer>
-
-THE SUBJECT SHOULD BE DEAD.
-
+  <span class="footer-line" id="eggTrigger">THE SUBJECT SHOULD BE DEAD.</span>
+  <span class="footer-hint">click</span>
 </footer>
 
+<!-- EASTER EGG -->
+<div class="egg-overlay" id="eggOverlay">
+  <div class="egg-panel">
+    <h2>ERROR_001</h2>
+    <div class="egg-sub">UNAUTHORIZED ACCESS — ASUNARO CORE LOG</div>
+
+    <div class="egg-record">
+      <h4>실험 기록</h4>
+      <p>피험체 SARIEL_001. 초기 반응 <span class="redacted">██████████</span> 이후 예상 범위를 벗어남.</p>
+    </div>
+    <div class="egg-record">
+      <h4>폐기 기록</h4>
+      <p>프로토콜에 따라 <span class="redacted">██████████</span> 처리 예정이었으나 절차가 완료되지 않음.</p>
+    </div>
+    <div class="egg-record">
+      <h4>사망 기록</h4>
+      <p>사망 시각 <span class="redacted">██:██</span>. 그러나 <span class="redacted">██████████</span> 신호가 계속 수신됨.</p>
+    </div>
+
+    <button class="egg-close" id="eggClose">CLOSE FILE</button>
+  </div>
+</div>
+
 <script>
+/* ============================================================
+   BOOT SEQUENCE
+   ============================================================ */
+const bootLines = [
+  { text:"ASUNARO SYSTEM",               cls:"" },
+  { text:"BOOTING...",                   cls:"" },
+  { text:"BOOTING...",                   cls:"" },
+  { text:"SUBJECT FOUND : SARIEL_001",   cls:"" },
+  { text:"",                             cls:"" },
+  { text:"STATUS : DECEASED",            cls:"b-dead" },
+  { text:"ERROR",                        cls:"b-error b-glitch" },
+  { text:"ERROR",                        cls:"b-error b-glitch" },
+  { text:"ERROR",                        cls:"b-error b-glitch" },
+  { text:"REBOOT SUCCESSFUL",            cls:"" },
+  { text:"STATUS : ACTIVE",              cls:"b-active" },
+];
 
-function changeSprite(src){
-document.getElementById("sprite").src = src;
+const bootConsole = document.getElementById('bootConsole');
+let bootIndex = 0;
+
+function renderBootLine(){
+  if(bootIndex >= bootLines.length){
+    setTimeout(()=>{
+      document.getElementById('boot').classList.add('hide');
+      setTimeout(()=>{ document.getElementById('boot').remove(); startHeroTypewriter(); }, 650);
+    }, 500);
+    return;
+  }
+  const line = bootLines[bootIndex];
+  const div = document.createElement('div');
+  div.className = 'boot-line ' + line.cls;
+  div.textContent = line.text;
+  bootConsole.appendChild(div);
+  requestAnimationFrame(()=> div.classList.add('show'));
+  bootIndex++;
+  setTimeout(renderBootLine, line.text === "" ? 120 : 260);
+}
+renderBootLine();
+
+/* ============================================================
+   HERO TYPEWRITER
+   ============================================================ */
+function startHeroTypewriter(){
+  const el = document.getElementById('heroName');
+  const txt = "SARIEL";
+  let i = 0;
+  const caret = document.createElement('span');
+  caret.className = 'caret';
+  caret.textContent = '\u00A0';
+
+  function type(){
+    if(i < txt.length){
+      el.textContent = txt.slice(0, i+1);
+      el.appendChild(caret);
+      i++;
+      setTimeout(type, 140);
+    }
+  }
+  type();
 }
 
+/* ============================================================
+   CUSTOM CURSOR
+   ============================================================ */
+if(window.matchMedia('(pointer: fine)').matches){
+  document.body.classList.add('cursor-ready');
+  const dot = document.getElementById('cursorDot');
+  const ring = document.getElementById('cursorRing');
+  let rx=0, ry=0, mx=0, my=0;
+  window.addEventListener('mousemove', e=>{
+    mx = e.clientX; my = e.clientY;
+    dot.style.transform = `translate(${mx}px,${my}px) translate(-50%,-50%)`;
+  });
+  (function loop(){
+    rx += (mx-rx)*.18; ry += (my-ry)*.18;
+    ring.style.transform = `translate(${rx}px,${ry}px) translate(-50%,-50%)`;
+    requestAnimationFrame(loop);
+  })();
+  document.addEventListener('mouseover', e=>{
+    if(e.target.closest('button, a, .file-row, .sprite-buttons button, .voice-tab, .footer-line')){
+      ring.classList.add('hover');
+    }
+  });
+  document.addEventListener('mouseout', e=>{
+    if(e.target.closest('button, a, .file-row, .sprite-buttons button, .voice-tab, .footer-line')){
+      ring.classList.remove('hover');
+    }
+  });
+}
+
+/* ============================================================
+   ERROR FIELD (drifting background text)
+   ============================================================ */
+(function(){
+  const field = document.getElementById('errorField');
+  const msgs = ["ERROR DETECTED","SIGNAL LOST","STATUS : ACTIVE","記録破損"];
+  for(let i=0;i<7;i++){
+    const s = document.createElement('span');
+    s.textContent = msgs[i % msgs.length];
+    s.style.left = (Math.random()*80+5) + '%';
+    s.style.top = (Math.random()*90+5) + '%';
+    s.style.fontSize = (14 + Math.random()*10) + 'px';
+    s.style.animationDuration = (10 + Math.random()*10) + 's';
+    s.style.animationDelay = (Math.random()*10) + 's';
+    field.appendChild(s);
+  }
+})();
+
+/* ============================================================
+   FILE ACCORDION
+   ============================================================ */
+document.querySelectorAll('.file-row').forEach(row=>{
+  row.querySelector('.file-head').addEventListener('click', ()=>{
+    const isOpen = row.classList.contains('open');
+    document.querySelectorAll('.file-row.open').forEach(r=> r.classList.remove('open'));
+    if(!isOpen) row.classList.add('open');
+  });
+});
+
+/* ============================================================
+   MEMORY REVEAL
+   ============================================================ */
 function toggleMemory(){
+  const memory = document.getElementById('memorySection');
+  const flash = document.getElementById('flash');
+  const btn = document.getElementById('memoryBtn');
+  const prompt = document.getElementById('memoryPrompt');
+  const opening = !memory.classList.contains('open');
 
-const memory =
-document.getElementById("memorySection");
+  flash.classList.remove('active');
+  void flash.offsetWidth;
+  flash.classList.add('active');
 
-memory.classList.toggle("open");
+  setTimeout(()=>{
+    memory.classList.toggle('open');
+    btn.textContent = opening ? 'CLOSE MEMORY FILE' : 'OPEN MEMORY FILE';
+    prompt.textContent = opening ? 'MEMORY FILE ACCESSED' : 'ACCESS MEMORY FILE?';
+  }, 180);
 
-const flash =
-document.getElementById("flash");
-
-flash.classList.add("active");
-
-setTimeout(function(){
-
-flash.classList.remove("active");
-
-},700);
-
+  setTimeout(()=> flash.classList.remove('active'), 1100);
 }
 
-const titleText = "SARIEL";
+/* ============================================================
+   DEATH LOG — scroll trigger + kernel dump
+   ============================================================ */
+const kernelText = [
+"[ffffffffa038b890] ? init_module+0x0/0x90",
+"[ffffffff8100b0d2] system_call_fastpath+0x16/0x1b",
+"RIP: [ffffffffa03b115d] sch_place_binfmt_hooks+0x5d/0xc0",
+"Kernel panic - not syncing: Fatal exception",
+"Pid: 1675, comm: insmod  Tainted: G   D",
+"Call Trace:",
+"---[ end trace 94ad12e9a377e19 ]---",
+"CR2: ffffffff817b4d0d",
+].join('\n');
+document.getElementById('kernelDump').textContent = kernelText;
 
-let i = 0;
+const deathlog = document.getElementById('deathlog');
+const dlObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting && entry.intersectionRatio > .55){
+      deathlog.classList.add('trigger');
+      dlObserver.disconnect();
+    }
+  });
+}, { threshold:[.55] });
+dlObserver.observe(deathlog);
 
-function typeTitle(){
+/* ============================================================
+   VOICE TABS
+   ============================================================ */
+document.getElementById('voiceTabs').addEventListener('click', e=>{
+  const btn = e.target.closest('.voice-tab');
+  if(!btn) return;
+  document.querySelectorAll('.voice-tab').forEach(t=> t.classList.remove('active'));
+  document.querySelectorAll('.voice-panel').forEach(p=> p.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelector(`.voice-panel[data-panel="${btn.dataset.tab}"]`).classList.add('active');
+});
 
-if(i < titleText.length){
+/* ============================================================
+   SPRITE ARCHIVE — fade swap
+   ============================================================ */
+document.getElementById('spriteButtons').addEventListener('click', e=>{
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  document.querySelectorAll('#spriteButtons button').forEach(b=> b.classList.remove('active'));
+  btn.classList.add('active');
 
-document.getElementById("heroName").innerHTML += titleText.charAt(i);
+  const img = document.getElementById('sprite');
+  const fallback = document.getElementById('spriteFallback');
+  img.classList.add('swap');
+  setTimeout(()=>{
+    img.style.display = '';
+    fallback.style.display = 'none';
+    img.src = btn.dataset.src;
+    img.classList.remove('swap');
+  }, 220);
+});
 
-i++;
+/* ============================================================
+   EASTER EGG
+   ============================================================ */
+const eggOverlay = document.getElementById('eggOverlay');
+document.getElementById('eggTrigger').addEventListener('click', ()=> eggOverlay.classList.add('open'));
+document.getElementById('eggClose').addEventListener('click', ()=> eggOverlay.classList.remove('open'));
+eggOverlay.addEventListener('click', e=>{ if(e.target === eggOverlay) eggOverlay.classList.remove('open'); });
 
-setTimeout(typeTitle,150);
-
-}
-
-}
-
-window.onload = function(){
-
-typeTitle();
-
-setTimeout(function(){
-
-document.getElementById("boot").style.display="none";
-
-},2500);
-
-};
-
+/* ============================================================
+   SCROLL REVEAL
+   ============================================================ */
+const revealObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add('in-view');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold:.15 });
+document.querySelectorAll('.section').forEach(s=> revealObserver.observe(s));
 </script>
 
 </body>
