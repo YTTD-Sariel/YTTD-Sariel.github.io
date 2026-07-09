@@ -3,176 +3,342 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>SARIEL_001</title>
+
 <link href="https://fonts.googleapis.com/css2?family=VT323&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+
 <style>
+
 :root{
---bg:#05070b; --card:#0c1017; --line:#203447; --text:#dce7f0; --accent:#79dfff;
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;overflow-x:hidden;}
-.crt{position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.02),rgba(255,255,255,.02) 1px,transparent 1px,transparent 3px);opacity:.15;z-index:9999;}
-.flash-overlay{position:fixed;inset:0;background:white;opacity:0;pointer-events:none;z-index:9998;}
-.flash-overlay.active{animation:memoryFlash .6s;}
-@keyframes memoryFlash{0%{opacity:0;}20%{opacity:1;}100%{opacity:0;}}
-
-.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:50px;}
-.hero-wrap{width:min(1300px,95%);display:grid;grid-template-columns:1fr 500px;gap:60px;}
-.system-box{border:1px solid var(--line);padding:20px;background:rgba(255,255,255,.02);margin-bottom:25px;}
-.system-title,.title,.hero-name,.memory-btn{font-family:'VT323',monospace;}
-.system-title{font-size:34px;color:var(--accent);margin-bottom:10px;}
-.system-line{font-family:'VT323',monospace;font-size:24px;}
-.hero-name{font-size:120px;color:var(--accent);text-shadow:0 0 20px var(--accent);}
-.hero-quote{font-size:24px;margin-top:15px;line-height:1.8;}
-.tags{margin-top:30px;display:flex;gap:10px;flex-wrap:wrap;}
-.tags span{border:1px solid var(--accent);padding:8px 15px;font-family:'VT323',monospace;font-size:22px;}
-.hero img{width:100%;max-height:85vh;object-fit:contain;}
-
-.section{width:min(1100px,90%);margin:auto;padding:120px 0;border-top:1px solid var(--line);}
-.title{font-size:55px;color:var(--accent);margin-bottom:40px;}
-.card{border:1px solid var(--line);padding:25px;background:rgba(255,255,255,.02);line-height:2;}
-.relationship{display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap;}
-.node{border:1px solid var(--line);padding:20px 30px;background:var(--card);}
-.arrow{font-size:30px;color:var(--accent);}
-.quote{border-left:3px solid var(--accent);padding:20px;margin-bottom:20px;background:rgba(255,255,255,.02);}
-
-.memory-btn{background:none;border:1px solid var(--accent);color:var(--accent);padding:15px 25px;font-size:24px;cursor:pointer;}
-.memory-hidden{max-height:0;overflow:hidden;transition:max-height .8s ease;}
-.memory-hidden.open{max-height:3000px;}
-.memory-content{background:white;color:#243748;padding:80px;margin-top:40px;border-radius:10px;box-shadow:0 0 100px rgba(255,255,255,.3);line-height:2;}
-
-.sprite-view{display:flex;justify-content:center;align-items:center;gap:20px;}
-.sprite-view img{width:400px;max-width:90%;}
-button{background:none;border:1px solid var(--accent);color:var(--accent);padding:10px 20px;cursor:pointer;}
-
-footer{
-
-padding:80px;
-
-text-align:center;
-
+--bg:#05070b;
+--card:#0c1017;
+--line:#203447;
+--text:#dce7f0;
+--accent:#79dfff;
 }
 
-.sprite-gallery{
-
-display:flex;
-flex-direction:column;
-align-items:center;
-
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
 }
 
-.main-sprite{
-
-width:500px;
-max-width:90%;
-
-transition:.3s;
-
+html{
+scroll-behavior:smooth;
 }
 
-.sprite-buttons{
-
-display:flex;
-flex-wrap:wrap;
-justify-content:center;
-
-gap:10px;
-
-margin-top:30px;
-
+body{
+background:var(--bg);
+color:var(--text);
+font-family:'Noto Sans KR',sans-serif;
+overflow-x:hidden;
 }
 
-.sprite-buttons button{
-
-font-family:'VT323',monospace;
-
-font-size:24px;
-
-}
-
-.tooltip{
-
-position:relative;
-
-}
-
-.tooltip-text{
-
-position:absolute;
-
-bottom:120%;
-
-left:50%;
-
-transform:translateX(-50%);
-
-background:#0c1017;
-
-border:1px solid var(--accent);
-
-padding:15px;
-
-width:200px;
-
-opacity:0;
-
+.crt{
+position:fixed;
+inset:0;
 pointer-events:none;
-
-transition:.3s;
-
-font-size:14px;
-
-}
-
-.tooltip:hover .tooltip-text{
-
-opacity:1;
-
+background:
+repeating-linear-gradient(
+to bottom,
+rgba(255,255,255,.02),
+rgba(255,255,255,.02) 1px,
+transparent 1px,
+transparent 3px
+);
+opacity:.15;
+z-index:9999;
 }
 
 .noise{
-
 position:fixed;
-
 inset:0;
-
-background-image:url("https://www.transparenttextures.com/patterns/noise-pattern-with-subtle-cross-lines.png");
-
-opacity:.03;
-
 pointer-events:none;
-
-z-index:-1;
-
+opacity:.03;
+background-image:url("https://www.transparenttextures.com/patterns/noise-pattern-with-subtle-cross-lines.png");
 }
+
+.flash-overlay{
+position:fixed;
+inset:0;
+background:white;
+opacity:0;
+pointer-events:none;
+z-index:9998;
+}
+
+.flash-overlay.active{
+animation:memoryFlash .7s;
+}
+
+@keyframes memoryFlash{
+0%{opacity:0;}
+20%{opacity:1;}
+100%{opacity:0;}
+}
+
+.hero{
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:60px;
+}
+
+.hero-wrap{
+width:min(1300px,95%);
+display:grid;
+grid-template-columns:1fr 550px;
+gap:60px;
+align-items:center;
+}
+
+.system-box{
+border:1px solid var(--line);
+padding:25px;
+background:rgba(255,255,255,.02);
+margin-bottom:25px;
+}
+
+.system-title{
+font-family:'VT323',monospace;
+font-size:34px;
+color:var(--accent);
+margin-bottom:10px;
+}
+
+.system-line{
+font-family:'VT323',monospace;
+font-size:24px;
+line-height:1.6;
+}
+
+.dead{
+color:#7c8793;
+text-decoration:line-through;
+}
+
+.error{
+color:#ff7070;
+}
+
+.active{
+color:#79dfff;
+text-shadow:0 0 10px #79dfff;
+}
+
+.hero-name{
+font-family:'VT323',monospace;
+font-size:120px;
+color:var(--accent);
+text-shadow:0 0 20px var(--accent);
+}
+
+.hero-quote{
+font-size:24px;
+margin-top:20px;
+line-height:1.8;
+}
+
+.tags{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-top:30px;
+}
+
+.tags span{
+padding:8px 15px;
+border:1px solid var(--accent);
+font-family:'VT323',monospace;
+font-size:22px;
+}
+
+.hero-image{
+width:100%;
+max-height:85vh;
+object-fit:contain;
+}
+
+.section{
+width:min(1100px,90%);
+margin:auto;
+padding:120px 0;
+border-top:1px solid var(--line);
+}
+
+.title{
+font-family:'VT323',monospace;
+font-size:60px;
+color:var(--accent);
+margin-bottom:40px;
+}
+
+.card{
+border:1px solid var(--line);
+padding:30px;
+background:rgba(255,255,255,.02);
+line-height:2;
+}
+
+.relation-wrap{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:40px;
+flex-wrap:wrap;
+}
+
+.relation-card{
+width:420px;
+padding:30px;
+border:1px solid var(--line);
+background:rgba(255,255,255,.02);
+}
+
+.relation-card h3{
+font-family:'VT323',monospace;
+font-size:40px;
+color:var(--accent);
+margin-bottom:20px;
+}
+
+.relation-line{
+font-size:60px;
+color:var(--accent);
+}
+
+.memory-btn{
+background:none;
+border:1px solid var(--accent);
+color:var(--accent);
+padding:15px 25px;
+cursor:pointer;
+font-family:'VT323',monospace;
+font-size:28px;
+}
+
+.memory-hidden{
+max-height:0;
+overflow:hidden;
+transition:max-height .8s ease;
+}
+
+.memory-hidden.open{
+max-height:3000px;
+}
+
+.memory-content{
+background:white;
+color:#243748;
+padding:80px;
+margin-top:40px;
+border-radius:12px;
+box-shadow:0 0 100px rgba(255,255,255,.25);
+line-height:2;
+}
+
+.quote{
+border-left:3px solid var(--accent);
+padding:20px;
+margin-bottom:20px;
+background:rgba(255,255,255,.02);
+}
+
+.sprite-gallery{
+display:flex;
+flex-direction:column;
+align-items:center;
+}
+
+.main-sprite{
+width:500px;
+max-width:90%;
+}
+
+.sprite-buttons{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:10px;
+margin-top:30px;
+}
+
+.sprite-buttons button{
+background:none;
+border:1px solid var(--accent);
+color:var(--accent);
+padding:10px 15px;
+font-family:'VT323',monospace;
+font-size:22px;
+cursor:pointer;
+}
+
+footer{
+padding:100px;
+text-align:center;
+font-family:'VT323',monospace;
+font-size:30px;
+color:#667a8d;
+}
+
 @media(max-width:900px){
-.hero-wrap{grid-template-columns:1fr;}
-.hero-name{font-size:70px;}
+
+.hero-wrap{
+grid-template-columns:1fr;
 }
+
+.hero-name{
+font-size:70px;
+}
+
+}
+
 </style>
 </head>
+
 <body>
 
 <div class="noise"></div>
-
 <div id="flash" class="flash-overlay"></div>
 <div class="crt"></div>
 
 <section class="hero">
+
 <div class="hero-wrap">
 
 <div>
+
 <div class="system-box">
-<div class="system-title">ASUNARO DATABASE</div>
-<div class="system-line">SUBJECT : SARIEL_001</div>
-<div class="system-line">STATUS : ACTIVE</div>
-<div class="system-line">TYPE : HALF HUMAN / HALF DOLL</div>
-<div class="system-line">ERROR : DECOMMISSION FAILED</div>
+
+<div class="system-title">
+ASUNARO DATABASE
 </div>
 
-<h1 class="hero-name" id="heroName">
-</h1>
+<div class="system-line dead">
+STATUS : DECEASED
+</div>
+
+<div class="system-line error">
+ERROR DETECTED
+</div>
+
+<div class="system-line active">
+STATUS : ACTIVE
+</div>
+
+<div class="system-line">
+TYPE : HALF HUMAN / HALF DOLL
+</div>
+
+<div class="system-line">
+SUBJECT : SARIEL_001
+</div>
+
+</div>
+
+<h1 class="hero-name" id="heroName"></h1>
 
 <p class="hero-quote">
 "죽었다고?<br>
@@ -184,144 +350,207 @@ z-index:-1;
 <span>NATURAL</span>
 <span>ATHLETIC</span>
 </div>
+
 </div>
 
 <div>
-<img src="Image/프로필.png">
+
+<img src="Image/프로필.png" class="hero-image">
+
 </div>
 
 </div>
+
 </section>
 
 <section class="section">
-<h2 class="title">OFFICIAL STORY</h2>
+
+<h2 class="title">
+OFFICIAL STORY
+</h2>
+
 <div class="card">
-여기에 공식 서사 작성
+
+공식 서사 입력
+
 </div>
+
 </section>
 
 <section class="section">
-<h2 class="title">RELATIONSHIP</h2>
-<div class="relationship">
-<div class="node tooltip">
 
-SOU
+<h2 class="title">
+RELATIONSHIP
+</h2>
 
-<span class="tooltip-text">
-나를 찾아준 사람.
-나의 구세주.
-</span>
+<div class="relation-wrap">
+
+<div class="relation-card">
+
+<h3>SARIEL → SOU</h3>
+
+<p>
+나를 발견해준 사람.<br>
+나의 구세주.<br>
+세상에서 가장 믿는 존재.
+</p>
 
 </div>
-<div class="arrow">▶</div>
-<div class="node">SAVIOR</div>
-<div class="arrow">▶</div>
-<div class="node">SARIEL</div>
+
+<div class="relation-line">
+⇄
 </div>
+
+<div class="relation-card">
+
+<h3>SOU → SARIEL</h3>
+
+<p>
+처음에는 이용하기 좋은 참가자.<br>
+다루기 쉬운 말.<br>
+그러나 시간이 지나며 단순한 도구로만 남지 못했다.
+</p>
+
+</div>
+
+</div>
+
 </section>
 
 <section class="section">
-<h2 class="title">MEMORIES</h2>
+
+<h2 class="title">
+MEMORIES
+</h2>
 
 <button class="memory-btn" onclick="toggleMemory()">
 OPEN MEMORY FILE
 </button>
 
 <div id="memorySection" class="memory-hidden">
+
 <div class="memory-content">
-<h3 style="font-size:40px;margin-bottom:30px;">Before Everything</h3>
+
+<h3 style="font-size:42px;margin-bottom:30px;">
+Before Everything
+</h3>
+
 <p>
-여기에 인간 시절의 과거를 작성.<br>
-천사 같았던 모습, 죽기 전 기억, 소중한 추억 등.
+인간 시절의 과거 작성.
 </p>
+
 </div>
+
 </div>
+
 </section>
 
 <section class="section">
-<h2 class="title">VOICE SAMPLE</h2>
-<div class="quote">"아! 안녕!"</div>
-<div class="quote">"괜찮아! 내가 할게!"</div>
-<div class="quote">"...죽었다고?"</div>
+
+<h2 class="title">
+VOICE SAMPLE
+</h2>
+
+<div class="quote">
+"아! 안녕!"
+</div>
+
+<div class="quote">
+"괜찮아! 내가 할게!"
+</div>
+
+<div class="quote">
+"...죽었다고?"
+</div>
+
 </section>
 
 <section class="section">
-<h2 class="title">SPRITE ARCHIVE</h2>
+
+<h2 class="title">
+SPRITE ARCHIVE
+</h2>
+
 <div class="sprite-gallery">
 
-<img id="sprite" class="main-sprite" src="Image/Sariel_Natural.png">
+<img
+id="sprite"
+class="main-sprite"
+src="Image/Sariel_Natural.png">
 
 <div class="sprite-buttons">
 
-<button onclick="changeSprite('Image/Sariel_Natural.png')">
-Natural
-</button>
-
-<button onclick="changeSprite('Image/Sariel_Joy.png')">
-Joy
-</button>
-
-<button onclick="changeSprite('Image/Sariel_Anger.png')">
-Anger
-</button>
-
-<button onclick="changeSprite('Image/Sariel_Awkward.png')">
-Awkward
-</button>
-
-<button onclick="changeSprite('Image/Sariel_Panic.png')">
-Panic
-</button>
-
-<button onclick="changeSprite('Image/Sariel_Thinking.png')">
-Thinking
-</button>
-
-<button onclick="changeSprite('Image/Sariel_Tsundere.png')">
-Tsundere
-</button>
+<button onclick="changeSprite('Image/Sariel_Natural.png')">Natural</button>
+<button onclick="changeSprite('Image/Sariel_Joy.png')">Joy</button>
+<button onclick="changeSprite('Image/Sariel_Anger.png')">Anger</button>
+<button onclick="changeSprite('Image/Sariel_Awkward.png')">Awkward</button>
+<button onclick="changeSprite('Image/Sariel_Panic.png')">Panic</button>
+<button onclick="changeSprite('Image/Sariel_Thinking.png')">Thinking</button>
+<button onclick="changeSprite('Image/Sariel_Tsundere.png')">Tsundere</button>
 
 </div>
 
 </div>
+
 </section>
 
-<footer>THE SUBJECT SHOULD BE DEAD.</footer>
+<footer>
+
+THE SUBJECT SHOULD BE DEAD.
+
+</footer>
 
 <script>
 
 function changeSprite(src){
-    document.getElementById("sprite").src = src;
+document.getElementById("sprite").src = src;
 }
 
 function toggleMemory(){
-    const memory = document.getElementById("memorySection");
-    memory.classList.toggle("open");
 
-    const flash = document.getElementById("flash");
-    flash.classList.add("active");
+const memory =
+document.getElementById("memorySection");
 
-    setTimeout(function(){
-        flash.classList.remove("active");
-    }, 600);
+memory.classList.toggle("open");
+
+const flash =
+document.getElementById("flash");
+
+flash.classList.add("active");
+
+setTimeout(function(){
+
+flash.classList.remove("active");
+
+},700);
+
 }
 
 const titleText = "SARIEL";
+
 let i = 0;
 
 function typeTitle(){
-    if(i < titleText.length){
-        document.getElementById("heroName").innerHTML += titleText.charAt(i);
-        i++;
-        setTimeout(typeTitle,150);
-    }
+
+if(i < titleText.length){
+
+document.getElementById("heroName").innerHTML += titleText.charAt(i);
+
+i++;
+
+setTimeout(typeTitle,150);
+
+}
+
 }
 
 window.onload = function(){
-    typeTitle();
+
+typeTitle();
+
 };
 
 </script>
-  
+
 </body>
 </html>
