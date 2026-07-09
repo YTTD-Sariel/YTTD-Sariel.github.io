@@ -330,6 +330,39 @@ grid-template-columns:1fr;
 font-size:70px;
 }
 
+  #boot{
+
+position:fixed;
+inset:0;
+
+background:#020304;
+
+z-index:99999;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+font-family:'VT323',monospace;
+
+font-size:40px;
+
+color:#79dfff;
+
+}
+
+.boot-text{
+
+animation:flickerBoot .15s infinite;
+
+}
+
+@keyframes flickerBoot{
+
+0%{opacity:.7;}
+50%{opacity:1;}
+100%{opacity:.8;}
+
 }
 
 </style>
@@ -639,6 +672,12 @@ setTimeout(typeTitle,150);
 window.onload = function(){
 
 typeTitle();
+
+setTimeout(function(){
+
+document.getElementById("boot").style.display="none";
+
+},2500);
 
 };
 
