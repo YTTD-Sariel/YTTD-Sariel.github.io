@@ -316,10 +316,33 @@ opacity:.7;
 }
 
 .story-card p{
-
 line-height:1.8;
-
 }
+
+#boot{
+position:fixed;
+inset:0;
+background:#020304;
+z-index:99999;
+display:flex;
+justify-content:center;
+align-items:center;
+font-family:'VT323',monospace;
+font-size:40px;
+color:#79dfff;
+}
+
+.boot-text{
+text-align:center;
+animation:flickerBoot .15s infinite;
+}
+
+@keyframes flickerBoot{
+0%{opacity:.7;}
+50%{opacity:1;}
+100%{opacity:.8;}
+}
+
 @media(max-width:900px){
 
 .hero-wrap{
@@ -328,6 +351,8 @@ grid-template-columns:1fr;
 
 .hero-name{
 font-size:70px;
+}
+  
 }
 
   #boot{
@@ -369,7 +394,7 @@ animation:flickerBoot .15s infinite;
 </head>
 
 <body>
-<div id="boot">
+<div id="boot" style="display:flex;">
 
 <div class="boot-text">
 
