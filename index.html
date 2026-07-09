@@ -291,48 +291,35 @@ Tsundere
 <script>
 
 function changeSprite(src){
-document.getElementById("sprite").src = src;
+    document.getElementById("sprite").src = src;
+}
+
+function toggleMemory(){
+    const memory = document.getElementById("memorySection");
+    memory.classList.toggle("open");
+
+    const flash = document.getElementById("flash");
+    flash.classList.add("active");
+
+    setTimeout(function(){
+        flash.classList.remove("active");
+    }, 600);
 }
 
 const titleText = "SARIEL";
-
 let i = 0;
 
 function typeTitle(){
-
-if(i < titleText.length){
-
-document.getElementById("heroName").innerHTML += titleText.charAt(i);
-
-i++;
-
-setTimeout(typeTitle,150);
-
+    if(i < titleText.length){
+        document.getElementById("heroName").innerHTML += titleText.charAt(i);
+        i++;
+        setTimeout(typeTitle,150);
+    }
 }
 
-}
-
-typeTitle();
-
-function toggleMemory(){
-
-const memory =
-document.getElementById("memorySection");
-
-memory.classList.toggle("open");
-
-const flash =
-document.getElementById("flash");
-
-flash.classList.add("active");
-
-setTimeout(() => {
-
-flash.classList.remove("active");
-
-}, 600);
-
-}
+window.onload = function(){
+    typeTitle();
+};
 
 </script>
   
