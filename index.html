@@ -36,7 +36,7 @@
 }
 
 @media (prefers-reduced-motion: reduce){
-  *{ animation-duration:.05ms !important; animation-iteration-count:5 !important; transition-duration:.05ms !important; scroll-behavior:auto !important; }
+  *{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
 }
 
 *{ margin:0; padding:0; box-sizing:border-box; }
@@ -377,44 +377,140 @@ a{ color:inherit; }
 /* ============================================================
    OFFICIAL STORY — file listing
    ============================================================ */
-.file-list{ border:1px solid var(--line); }
-.file-row{
-  border-bottom:1px solid var(--line);
-  cursor:pointer;
+.chapter-list{ display:flex; flex-direction:column; gap:22px; }
+
+/* --- single chapter (summary always visible + expandable body) --- */
+.chapter{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.015);
 }
-.file-row:last-child{ border-bottom:none; }
-.file-head{
+.chapter-head{
   display:flex; align-items:center; gap:20px;
   padding:22px 26px;
+  cursor:pointer;
   transition:background .2s;
 }
-.file-row:hover .file-head{ background:rgba(121,223,255,.04); }
-.file-id{
+.chapter-head:hover{ background:rgba(121,223,255,.04); }
+.chapter-id{
   font-family:var(--font-sys); font-size:26px; color:var(--accent);
-  width:110px; flex-shrink:0;
+  width:90px; flex-shrink:0;
 }
-.file-meta{ flex:1; }
-.file-meta h4{
+.chapter-head h4{
+  flex:1;
   font-family:var(--font-sys); font-size:24px; font-weight:400;
   letter-spacing:.08em; color:var(--text);
 }
-.file-meta small{ color:var(--text-dim); font-size:13px; letter-spacing:.1em; }
-.file-chevron{
+.chapter-chevron{
   font-family:var(--font-sys); font-size:22px; color:var(--text-dim);
   transition:transform .3s var(--ease);
 }
-.file-row.open .file-chevron{ transform:rotate(90deg); color:var(--accent); }
-.file-body{
+.chapter.open .chapter-chevron{ transform:rotate(90deg); color:var(--accent); }
+.chapter-summary{
+  padding:0 26px 22px 116px;
+  font-size:15px; line-height:1.9;
+  color:var(--accent-soft);
+  font-style:italic;
+  border-bottom:1px solid var(--line-soft);
+}
+.chapter-body{
   max-height:0; overflow:hidden;
-  transition:max-height .5s var(--ease);
+  transition:max-height .6s var(--ease);
 }
-.file-row.open .file-body{ max-height:400px; }
-.file-body-inner{
-  padding:0 26px 28px 156px;
-  line-height:1.9;
+.chapter.open .chapter-body{ max-height:1400px; }
+.chapter-body-inner{
+  padding:26px 26px 30px 116px;
+  line-height:2;
   color:var(--silver);
-  font-size:16px;
+  font-size:15.5px;
+  white-space:pre-line;
 }
+
+/* --- chapter 2: route split --- */
+.chapter-split-label{
+  font-family:var(--font-sys); font-size:20px; letter-spacing:.15em;
+  color:var(--text-dim); margin-bottom:16px; padding-left:4px;
+}
+.route-cards{
+  display:grid; grid-template-columns:1fr 1fr; gap:20px;
+}
+.route-card{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.015);
+  padding:28px;
+  transition:border-color .3s;
+}
+.route-card[data-route="sou"]{ border-top:2px solid var(--accent); }
+.route-card[data-route="kanna"]{ border-top:2px solid var(--silver); }
+.route-card h4{
+  font-family:var(--font-sys); font-size:26px; letter-spacing:.1em;
+  margin-bottom:14px;
+}
+.route-card[data-route="sou"] h4{ color:var(--accent); }
+.route-card[data-route="kanna"] h4{ color:var(--silver); }
+.route-summary{
+  font-size:15px; line-height:1.9; color:var(--accent-soft);
+  font-style:italic; margin-bottom:18px;
+}
+.route-body{
+  max-height:0; overflow:hidden;
+  transition:max-height .6s var(--ease);
+}
+.route-card.open .route-body{ max-height:1600px; }
+.route-body-inner{
+  padding-bottom:20px;
+  font-size:15px; line-height:2; color:var(--silver);
+  white-space:pre-line;
+}
+.route-toggle{
+  background:none; border:1px solid var(--line); color:var(--text-dim);
+  font-family:var(--font-sys); font-size:16px; letter-spacing:.1em;
+  padding:8px 16px; cursor:pointer; transition:all .2s;
+}
+.route-toggle:hover{ border-color:var(--accent); color:var(--accent); }
+.route-card.open .route-toggle{ border-color:var(--accent); color:var(--accent); }
+
+/* --- locked / restricted file --- */
+.chapter-locked{
+  border:1px dashed var(--line);
+  background:rgba(255,255,255,.01);
+  overflow:hidden;
+}
+.lock-head{
+  display:flex; align-items:center; gap:16px;
+  padding:22px 26px;
+  cursor:pointer;
+  filter:blur(.2px);
+}
+.lock-icon{ font-size:22px; filter:grayscale(1) opacity(.7); }
+.lock-head h4{
+  flex:1;
+  font-family:var(--font-sys); font-size:22px; letter-spacing:.12em;
+  color:var(--text-dim);
+}
+.lock-hint{
+  font-family:var(--font-sys); font-size:14px; letter-spacing:.15em;
+  color:var(--error); opacity:.75;
+}
+.chapter-locked.unlocked .lock-head h4{ color:var(--accent); }
+.chapter-locked.unlocked .lock-icon{ filter:none; }
+.chapter-locked.unlocked .lock-hint{ color:var(--accent); }
+.if-routes{
+  max-height:0; overflow:hidden;
+  transition:max-height .8s var(--ease);
+  padding:0 26px;
+}
+.chapter-locked.unlocked .if-routes{ max-height:2000px; padding:0 26px 30px; }
+.if-card{
+  border-left:2px solid var(--error);
+  padding:16px 20px;
+  margin-top:18px;
+  background:rgba(255,95,114,.03);
+}
+.if-card h5{
+  font-family:var(--font-sys); font-size:19px; letter-spacing:.06em;
+  color:var(--accent-soft); margin-bottom:10px;
+}
+.if-card p{ font-size:14.5px; line-height:1.95; color:var(--silver); white-space:pre-line; }
 
 /* ============================================================
    RELATIONSHIP — tag map
@@ -505,6 +601,10 @@ a{ color:inherit; }
   color:#3d6d80; margin-bottom:26px; letter-spacing:.03em;
 }
 .memory-content p{ font-size:16px; color:#33475a; max-width:640px; }
+.memory-content p + p{ margin-top:20px; }
+.memory-content .memory-name{
+  font-size:15px; color:#6a8ea0; letter-spacing:.05em; margin-top:-6px; margin-bottom:26px;
+}
 .memory-content .memory-tag{
   display:inline-block; font-family:var(--font-sys); font-size:14px;
   letter-spacing:.2em; color:#6a8ea0; margin-bottom:20px;
@@ -808,54 +908,112 @@ footer{
   <div class="eyebrow">RECORD // 01</div>
   <h2 class="title">OFFICIAL STORY</h2>
 
-  <div class="file-list" id="fileList">
-    <div class="file-row">
-      <div class="file-head">
-        <span class="file-id">FILE_01</span>
-        <div class="file-meta">
-          <h4>DISCOVERY</h4>
-          <small>ACCESS LEVEL : PUBLIC</small>
-        </div>
-        <span class="file-chevron">▸</span>
+  <div class="chapter-list" id="chapterList">
+
+    <!-- 제1장 -->
+    <div class="chapter" data-chapter="1">
+      <div class="chapter-head">
+        <span class="chapter-id">제1장</span>
+        <h4>시작부분</h4>
+        <span class="chapter-chevron">▸</span>
       </div>
-      <div class="file-body"><div class="file-body-inner">공식서사1</div></div>
+      <div class="chapter-summary">눈을 떴을 때 이미 인형이었다. 이름도, 어제도, 자기 자신이 누구였는지도 없었다. 있는 건 손을 내밀어준 사람 하나 — 소우. 그 손을 놓치면 안 된다는 감각만이 유일하게 선명했다. 데스게임이 시작되고, 사리엘은 의심 없이 소우 하나만 믿기로 했다. 소우가 나를 찾아줬으니까. 그거면 충분했다.</div>
+      <div class="chapter-body"><div class="chapter-body-inner">정신을 차리자 낯선 방이었다. 몸은 인간의 형태를 하고 있었지만 무언가 결정적으로 달랐다 — 심장이 뛰는 방식이, 통증을 느끼는 순서가. 거울 속의 얼굴도 낯설었다.
+
+"괜찮아? 이름... 기억나?" 라고 물어온 사람이 소우였다. 대답할 수 없었다. 아무것도 없었으니까.
+
+소우는 자신이 사리엘을 발견한 경위도, 이 게임의 규칙도 차근차근 설명해줬다. 참가자들은 주기적으로 다수결로 한 명을 골라내야 하고, 골라진 사람은 사라진다. 살아남으려면 서로를 믿을 사람이 필요하다고 했다.
+
+사리엘은 망설이지 않았다. "그럼 우치는 소우만 믿을게." 아무것도 기억하지 못하는 와중에도, 그 판단만은 이상하리만치 쉬웠다. 손을 내밀어준 사람. 그게 전부였다.</div></div>
     </div>
 
-    <div class="file-row">
-      <div class="file-head">
-        <span class="file-id">FILE_02</span>
-        <div class="file-meta">
-          <h4>OBSERVATION</h4>
-          <small>ACCESS LEVEL : PUBLIC</small>
+    <!-- 제2장 -->
+    <div class="chapter-split" data-chapter="2">
+      <div class="chapter-split-label">제2장 — 갈림길</div>
+      <div class="route-cards">
+
+        <div class="route-card" data-route="sou">
+          <h4>SOU ROUTE</h4>
+          <div class="route-summary">믿었던 손이 다른 곳을 향하는 걸 봤을 때, 사리엘은 처음으로 질투라는 감정을 배웠다.</div>
+          <div class="route-body"><div class="route-body-inner">소우는 처음엔 분명히 그렇게 말했었다. "우리 둘이 서로 편이 되어주자." 사리엘은 그 말을 문자 그대로 믿었다. 이 게임 안에서 자신에게 허락된 유일한 사람.
+
+그런데 다수결의 순간이 다가올수록, 소우의 시선이 자꾸 다른 곳으로 향하는 게 보였다. 칸나. 게임이 시작되고 얼마 되지도 않았는데, 소우는 사리엘 몰래 칸나를 따로 만나고 그 애를 챙기고 있었다.
+
+"나랑만 편이라며." 사리엘은 그 말을 입 밖으로 꺼내지도 못했다. 대신 가슴 안쪽에서 뭔가가 조용히 무너지는 소리가 들렸다. 처음 느껴보는 감정이었다. 뜨겁고 추한 무언가가 치밀어 오른다는 것만 알았다.
+
+다수결 투표 용지를 손에 쥔 순간, 사리엘은 거의 아무 생각도 하지 못했다. 그냥 손이 먼저 움직였다. 칸나의 이름 위에.
+
+칸나가 사라지고 나서야 사리엘은 자신이 무슨 짓을 했는지 실감했다. 후회는 즉각적이었지만 이미 늦어 있었다. 소우는 그 뒤로 사리엘을 쳐다보지도 않았다. 미움받는다는 게 이렇게 아픈 건지 몰랐다.
+
+그리고 그 감정의 밑바닥에서, 훨씬 오래 눌러왔던 의심이 고개를 들었다. — 나는 정말 인간이었을까. 인형 주제에, 진짜 인간들을 밟고 여기까지 올라온 게 아닐까. 소우한테 사랑받고 싶어서 칸나를 지워버린 게 아닐까.
+
+그 뒤로 사리엘이 어떻게 됐는지는, 아직 아무도 쓰지 않았다.</div></div>
+          <button class="route-toggle">펼치기 ▾</button>
         </div>
-        <span class="file-chevron">▸</span>
+
+        <div class="route-card" data-route="kanna">
+          <h4>KANNA ROUTE</h4>
+          <div class="route-summary">사리엘이 몰랐던 사실 하나 — 칸나는, 소우의 동생이었다.</div>
+          <div class="route-body"><div class="route-body-inner">뒤늦게 알게 된 사실이었다. 칸나는 소우의 여동생이었다. 남매라는 걸 숨긴 채로 게임에 참가하고 있었다는 것도, 소우가 그 사실을 필사적으로 감추고 있었다는 것도.
+
+사리엘은 그걸 알고 나서야 소우가 왜 그렇게 위태로워 보였는지 이해했다. 하나뿐인 가족을 이 게임 안에서 지켜야 하는 사람의 얼굴.
+
+그 사실을 안 순간에도, 사리엘의 마음은 소우 쪽으로 더 기울었다. 도와주고 싶었다. 소우가 무너지지 않기를 바랐다.
+
+하지만 고백은 항상 너무 늦게 나왔다. 소우가 사라지기 직전, 사리엘은 겨우 입을 열었다 — 무슨 말을 하려고 했는지는 사리엘 자신도 정확히 기억하지 못한다. 그저 늦었다는 것만 확실했다.
+
+소우가 사라진 뒤, 사리엘은 이상한 방식으로 그 자리를 채웠다. 자신이 소우에게 어떤 사람이었는지도 기억나지 않으면서, 몸이 먼저 움직여 칸나를 챙기고 있었다. 누구에게도 티 내지 않고, 뒤에서 조용히.
+
+왜 그러는지는 사리엘도 설명하지 못한다. 다만 그렇게 하지 않으면 안 될 것 같았다. 마치 누군가 대신 남겨둔 부탁처럼.</div></div>
+          <button class="route-toggle">펼치기 ▾</button>
+        </div>
+
       </div>
-      <div class="file-body"><div class="file-body-inner">공식서사2</div></div>
     </div>
 
-    <div class="file-row">
-      <div class="file-head">
-        <span class="file-id">FILE_03</span>
-        <div class="file-meta">
-          <h4>TERMINATION FAILURE</h4>
-          <small>ACCESS LEVEL : PUBLIC</small>
-        </div>
-        <span class="file-chevron">▸</span>
+    <!-- 제3장 -->
+    <div class="chapter" data-chapter="3">
+      <div class="chapter-head">
+        <span class="chapter-id">제3장</span>
+        <h4>결말</h4>
+        <span class="chapter-chevron">▸</span>
       </div>
-      <div class="file-body"><div class="file-body-inner">공식서사3</div></div>
+      <div class="chapter-summary">게임이 어떻게 끝났는지, 사리엘이 어떤 선택을 했는지 — 그 이후의 기록은 아직 존재하지 않는다.</div>
+      <div class="chapter-body"><div class="chapter-body-inner">확실한 건 하나뿐이다.
+
+사리엘은 지금도 움직이고 있다.
+
+STATUS : ACTIVE.
+CAUSE : UNKNOWN.</div></div>
     </div>
 
-    <div class="file-row">
-      <div class="file-head">
-        <span class="file-id">FILE_04</span>
-        <div class="file-meta">
-          <h4>UNCLASSIFIED</h4>
-          <small>ACCESS LEVEL : RESTRICTED</small>
-        </div>
-        <span class="file-chevron">▸</span>
+    <!-- 잠긴 파일 -->
+    <div class="chapter-locked" id="lockedFile">
+      <div class="lock-head">
+        <span class="lock-icon">🔒</span>
+        <h4>RESTRICTED FILE — IF ROUTES</h4>
+        <span class="lock-hint">CLICK TO DECRYPT</span>
       </div>
-      <div class="file-body"><div class="file-body-inner">공식서사4</div></div>
+      <div class="if-routes" id="ifRoutes">
+        <div class="if-card">
+          <h5>IF_01 — 탈출로가 진짜로 열려 있었다면</h5>
+          <p>만약 그때 탈출이 진짜로 가능했다면, 사리엘은 소우와 함께 그 게임 밖에서 살게 됐을 것이다.
+
+근데 문제가 하나 있다. 사리엘은 서류상 존재하지 않는 사람이다. 신원 확인이 안 되니까 보험도 못 들고, 일도 못 구한다.
+
+결국 사리엘의 생활비를 대기 위해서 — 소우가 몸을 판다.
+
+...소우야, 진짜 그만 좀 팔어.</p>
+        </div>
+        <div class="if-card">
+          <h5>IF_02 — 사리엘 혼자 나갔다면</h5>
+          <p>이 루트에서는 사리엘이 혼자 게임을 빠져나간다. 다른 참가자들 도움을 받아서 어찌저찌 일본 거주민 등록까지 성공한다.
+
+그렇다고 형편이 좋아지는 건 아니다. 사리엘은 돈 대신 봉사활동을 택한다. 소우는(이 루트에서도 결국 어떻게든 다시 등장해서) 원한 적도 없고 딱 잘라 거절했는데, 사리엘 고집이 더 세서 결국 밀린다.</p>
+        </div>
+      </div>
     </div>
+
   </div>
 </section>
 
@@ -907,8 +1065,38 @@ footer{
     <div id="memorySection" class="memory-hidden">
       <div class="memory-content">
         <span class="memory-tag">BEFORE EVERYTHING</span>
-        <h3>인간 시절</h3>
-        <p>인간 시절의 과거 작성.</p>
+        <h3>히이라기 유이토</h3>
+        <p class="memory-name">柊 結人 — HIIRAGI YUITO</p>
+
+        <p>이름은 히이라기 유이토. 축구를 좋아했고, 사람 많은 곳을 좋아했다. '곤란한 사람을 돕는' 정의감 같은 건 딱히 없었다 — 그냥 친구가 소중했다. 친구는 가족이고, 우리는 다 친구다. 그게 유이토의 전부였다.</p>
+
+        <p>부모님은 사고로 일찍 세상을 떠났고, 그 뒤로 쭉 혼자 살았다. 혼자 있는 걸 못 견뎌서 사람들 속에 있으려고 애썼다. 축구, 야외활동, 몰려다니는 무리 — 전부 외로움을 견디기 위한 방법이었다.</p>
+
+        <p>우연히 빈 교실에서 츠키미 신과 히요리 소우를 봤다. 뭔가 잘못됐다는 걸 한눈에 알았다. 신은 히요리를 무서워하고 있었고, 그 관계는 도무지 대등해 보이지 않았다.</p>
+
+        <p>유이토는 신한테 다가가서 말했다. "저런 애랑 놀지 마. 내 친구들이랑 놀자." 친구들도 신을 반겨줬다. 다만 유이토만큼 나서서 지켜주는 사람은 없었다 — 다들 그냥, 곁에 있어주는 정도였다.</p>
+
+        <p>어느 날 유이토가 축구하러 간 사이에, 히요리가 신을 데려갔다. 무슨 일이 있었는지는 아무도 입 밖으로 꺼내지 않았다. 그날 저녁, 유이토는 잠기지 않은 빈 교실 문을 열고 안에서 떨고 있는 신을 발견했다.</p>
+
+        <p>집으로 데려가 쉬게 했다. "내일은 학교 오지 마." 신은 괜찮다고 버티다가 결국 고개를 끄덕이고 잠들었다. 유이토는 다음 날 혼자 등교했다.</p>
+
+        <p>교문 앞에서 히요리가 인사를 건넸다. 유이토는 하나도 무섭지 않았다. 주변엔 늘 친구가 있었고, 그 친구들을 믿었으니까.</p>
+
+        <p>그날 유이토는 다쳤다. 자세한 건 남아있지 않다. 신이 뒤늦게 달려와 그만해 달라고 빌었다. 유이토를 데려가려 했다.</p>
+
+        <p>히요리는 놔주지 않았다. 대신 신에게 요구했다 — 유이토의 눈을 보고 "이제 너 필요 없어"라고 말하라고. 신은 그 말을 할 수 없었다. 그러자 히요리는 유이토를 더 아프게 했다. 신에게는 이렇게 말했다. "네가 얘를 따르게 했으니까, 이건 다 네 잘못이야."</p>
+
+        <p>다음 날 유이토는 온몸에 멍이 들고 손목뼈가 부러진 채로 히요리의 교실을 찾아갔다. 히요리는 아무 일도 없었다는 얼굴을 했다. 그 태연함에 유이토는 정신을 놓아버렸다 — 옆자리 학생의 필통에서 커터칼을 꺼내 휘둘렀다.</p>
+
+        <p>누구라도 도와주길 바랐다. 다 아는 얼굴들이었는데, 아무도 움직이지 않았다. 신조차도. 그 순간 유이토 안에서 뭔가가 완전히 꺾였다.</p>
+
+        <p>히요리는 소란을 수습하겠다며 유이토를 복도로 끌고 갔다. 신이 뒤쫓아왔다 — 유이토가 놓친 커터칼을 히요리가 주워 들었기 때문이었다.</p>
+
+        <p>복도 끝에서, 히요리는 유이토를 쓰러뜨리고 신의 손에 그 칼을 억지로 쥐여줬다. 신은 저항했지만, 결국 손이 잡힌 채로 끌려갔다.</p>
+
+        <p>"네가 죽였어."</p>
+
+        <p>유이토는 자신이 나중에 어떤 이름으로 불리게 될지 알지 못한 채로 눈을 감았다. 사리엘이라는 이름은, 아직 아무에게도 존재하지 않았다.</p>
       </div>
     </div>
   </div>
@@ -1091,12 +1279,12 @@ if(window.matchMedia('(pointer: fine)').matches){
     requestAnimationFrame(loop);
   })();
   document.addEventListener('mouseover', e=>{
-    if(e.target.closest('button, a, .file-row, .sprite-buttons button, .voice-tab, .footer-line')){
+    if(e.target.closest('button, a, .chapter-head, .route-toggle, .lock-head, .sprite-buttons button, .voice-tab, .footer-line')){
       ring.classList.add('hover');
     }
   });
   document.addEventListener('mouseout', e=>{
-    if(e.target.closest('button, a, .file-row, .sprite-buttons button, .voice-tab, .footer-line')){
+    if(e.target.closest('button, a, .chapter-head, .route-toggle, .lock-head, .sprite-buttons button, .voice-tab, .footer-line')){
       ring.classList.remove('hover');
     }
   });
@@ -1121,14 +1309,34 @@ if(window.matchMedia('(pointer: fine)').matches){
 })();
 
 /* ============================================================
-   FILE ACCORDION
+   OFFICIAL STORY — chapter accordion (summary always visible)
    ============================================================ */
-document.querySelectorAll('.file-row').forEach(row=>{
-  row.querySelector('.file-head').addEventListener('click', ()=>{
-    const isOpen = row.classList.contains('open');
-    document.querySelectorAll('.file-row.open').forEach(r=> r.classList.remove('open'));
-    if(!isOpen) row.classList.add('open');
+document.querySelectorAll('.chapter').forEach(ch=>{
+  ch.querySelector('.chapter-head').addEventListener('click', ()=>{
+    ch.classList.toggle('open');
   });
+});
+
+/* --- route cards (independent toggles, chapter 2) --- */
+document.querySelectorAll('.route-card').forEach(card=>{
+  const btn = card.querySelector('.route-toggle');
+  btn.addEventListener('click', ()=>{
+    const opening = !card.classList.contains('open');
+    card.classList.toggle('open');
+    btn.textContent = opening ? '접기 ▴' : '펼치기 ▾';
+  });
+});
+
+/* --- restricted file (IF routes) --- */
+const lockedFile = document.getElementById('lockedFile');
+lockedFile.querySelector('.lock-head').addEventListener('click', ()=>{
+  const opening = !lockedFile.classList.contains('unlocked');
+  lockedFile.classList.toggle('unlocked');
+  lockedFile.querySelector('.lock-icon').textContent = opening ? '🔓' : '🔒';
+  lockedFile.querySelector('h4').textContent = opening
+    ? 'RESTRICTED FILE — DECRYPTED'
+    : 'RESTRICTED FILE — IF ROUTES';
+  lockedFile.querySelector('.lock-hint').textContent = opening ? 'ACCESS GRANTED' : 'CLICK TO DECRYPT';
 });
 
 /* ============================================================
