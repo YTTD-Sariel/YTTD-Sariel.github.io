@@ -842,11 +842,67 @@ footer{
   .hero-name{ font-size:56px; min-height:56px; }
   .relation-card{ width:100%; }
 }
-
+/* MUSIC PLAYER */
+.music-player{
+  position:fixed;
+  right:22px; bottom:22px;
+  z-index:99990;
+  display:flex; align-items:center; gap:14px;
+  border:1px solid var(--line);
+  background:rgba(5,7,11,.82);
+  backdrop-filter:blur(6px);
+  padding:12px 18px 12px 14px;
+  transition:border-color .3s;
+}
+.music-player.playing{ border-color:var(--accent); }
+.music-toggle{
+  width:34px; height:34px; flex-shrink:0;
+  border:1px solid var(--line);
+  background:none;
+  color:var(--text-dim);
+  cursor:pointer;
+  font-size:16px;
+  display:flex; align-items:center; justify-content:center;
+  transition:all .2s;
+}
+.music-player.playing .music-toggle{ border-color:var(--accent); color:var(--accent); }
+.music-bars{ display:flex; align-items:flex-end; gap:2px; height:14px; }
+.music-bars span{ width:2px; background:var(--text-dim); height:4px; }
+.music-player.playing .music-bars span{
+  background:var(--accent);
+  animation:musicBar .9s ease-in-out infinite;
+}
+.music-bars span:nth-child(1){ animation-delay:0s; }
+.music-bars span:nth-child(2){ animation-delay:.15s; }
+.music-bars span:nth-child(3){ animation-delay:.3s; }
+.music-bars span:nth-child(4){ animation-delay:.45s; }
+@keyframes musicBar{ 0%,100%{ height:4px; } 50%{ height:14px; } }
+.music-info{ display:flex; flex-direction:column; line-height:1.3; }
+.music-label{
+  font-family:var(--font-sys); font-size:11px; letter-spacing:.2em;
+  color:var(--text-dim);
+}
+.music-title{
+  font-family:var(--font-sys); font-size:17px; letter-spacing:.03em;
+  color:var(--text); white-space:nowrap; overflow:hidden;
+}
+@media(max-width:600px){
+  .music-player{ right:14px; bottom:14px; padding:10px 14px 10px 10px; }
+  .music-title{ max-width:120px; text-overflow:ellipsis; }
+}
 </style>
 </head>
 
 <body>
+   <div class="music-player" id="musicPlayer">
+  <button class="music-toggle" id="musicToggle" aria-label="toggle sound">🔇</button>
+  <div class="music-bars"><span></span><span></span><span></span><span></span></div>
+  <div class="music-info">
+    <span class="music-label">NOW PLAYING</span>
+    <span class="music-title" id="musicTitle"></span>
+  </div>
+</div>
+<div id="ytHost" style="position:fixed; width:1px; height:1px; opacity:0; pointer-events:none; bottom:0; right:0;"></div>
 
 <!-- BOOT SEQUENCE -->
 <div id="boot">
@@ -1481,6 +1537,64 @@ const revealObserver = new IntersectionObserver((entries)=>{
 }, { threshold:.15 });
 document.querySelectorAll('.section').forEach(s=> revealObserver.observe(s));
 </script>
+<script>
+(function(){
+  const YT_VIDEO_ID = 'KNH_DC5zdTI';          // 유튜브 영상 ID만 바꾸면 곡 교체 가능
+  const TRACK_TITLE  = 'Silent Hill — Iwakura'; // 표시될 제목
 
+  const playerBox = document.getElementById('musicPlayer');
+  const toggleBtn = document.getElementById('musicToggle');
+  const titleEl   = document.getElementById('musicTitle');
+
+  let ti = 0;
+  function typeTitle(){
+    if(ti <= TRACK_TITLE.length){
+      titleEl.textContent = TRACK_TITLE.slice(0, ti);
+      ti++;
+      setTimeout(typeTitle, 45);
+    }
+  }
+
+  let ytPlayer = null;
+  let ready = false;
+
+  window.onYouTubeIframeAPIReady = function(){
+    ytPlayer = new YT.Player('ytHost', {
+      videoId: YT_VIDEO_ID,
+      playerVars:{
+        autoplay:1, mute:1, loop:1, playlist:YT_VIDEO_ID,
+        controls:0, disablekb:1, fs:0, modestbranding:1, playsinline:1
+      },
+      events:{
+        onReady:(e)=>{
+          ready = true;
+          e.target.mute();
+          e.target.playVideo();
+          typeTitle();
+        }
+      }
+    });
+  };
+
+  const tag = document.createElement('script');
+  tag.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(tag);
+
+  toggleBtn.addEventListener('click', ()=>{
+    if(!ready || !ytPlayer) return;
+    const muted = ytPlayer.isMuted();
+    if(muted){
+      ytPlayer.unMute();
+      ytPlayer.setVolume(45);
+      toggleBtn.textContent = '🔊';
+      playerBox.classList.add('playing');
+    } else {
+      ytPlayer.mute();
+      toggleBtn.textContent = '🔇';
+      playerBox.classList.remove('playing');
+    }
+  });
+})();
+</script>
 </body>
 </html>
